@@ -1,1 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Wedding - Joseph and Elsie</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<style>
+.mySlides {display:none;}
+</style>
+</head>
+<style>
+    body,
+    h1,
+    h2 {
+        font-family: "Raleway", sans-serif
+    }
 
+    body,
+    html {
+        height: 100%
+    }
+
+    p {
+        line-height: 2
+    }
+    p {
+      font-size: 30px
+    }
+    .bgimg,
+    .bgimg2 {
+        min-height: 100%;
+        background-position: center;
+        background-size: cover;
+    }
+
+    .bgimg {
+        background-image: url("wedding_couple.jpeg")
+    }
+
+    .bgimg2 {
+        background-image: url("flowers.jpeg")
+    }
+</style>
+
+<body>
+
+    <!-- Header / Home-->
+    <header class="w3-display-container w3-wide bgimg w3-grayscale-min" id="home">
+        <div class="w3-display-middle w3-text-white w3-center">
+            <h1 class="w3-jumbo">Elsie and Joseph</h1>
+            <h2>Are getting married</h2>
+            <h2><b>17.07.2017</b></h2>
+        </div>
+    </header>
+
+    <!-- Navbar (sticky bottom) -->
+    <div class="w3-bottom w3-hide-small">
+        <div class="w3-bar w3-white w3-center w3-padding w3-opacity-min w3-hover-opacity-off">
+            <a href="#home" style="width:25%" class="w3-bar-item w3-button">Home</a>
+            <a href="#us" style="width:25%" class="w3-bar-item w3-button">Our Story</a>
+            <a href="#wedding" style="width:25%" class="w3-bar-item w3-button">Wedding</a>
+            <a href="#rsvp" style="width:25%" class="w3-bar-item w3-button w3-hover-black">RSVP</a>
+        </div>
+    </div>
+
+    <!-- About / Jane And John -->
+    <div class="w3-container w3-padding-64 w3-pale-red w3-grayscale-min" >
+        <div class="w3-content">
+            <h1 class="w3-center w3-text-grey"><b>Elsie Amy Grant and Joseph Kobina Daniels</b></h1>
+            <img class="w3-round w3-grayscale-min" src="wedding_couple2.jpeg" style="width:100%;margin:32px 0">
+            <p id="us"><i>This is a special occasion in our lives, we met in an extraordinary way and it was clear when
+              we began as friends that this was a pretty special relationship. Spending time with each other was
+              never a bother, we accepted each other’s flaw and we are blessed to invite you all to witness the
+              culmination of a beautiful dating journey that also leads to the start of our lives together legally.
+              We have been one for a long time but its exciting to put a seal on it and more importantly to let the world know.
+              We ask that you honour us with your presence and God richly bless you.</i>
+            </p><br>
+            <p class="w3-center"><a href="#wedding"
+                    class="w3-button w3-black w3-round w3-padding-large w3-large">Wedding Details</a></p>
+        </div>
+    </div>
+
+    <!-- Background photo -->
+    <div class="w3-display-container bgimg2">
+        <div class="w3-display-middle w3-text-white w3-center">
+            <h1 class="w3-jumbo" style="font-weight:bold">You Are Invited</h1><br>
+            <h2>Of course..</h2>
+        </div>
+    </div>
+
+    <!-- Wedding information -->
+    <div class="w3-container w3-padding-64 w3-pale-red w3-grayscale-min w3-center" id="wedding">
+        <div class="w3-content">
+            <h1 class="w3-text-grey" style="font-weight:bold"><b>THE WEDDING</b></h1>
+            <div class="w3-row">
+                <div class="w3-half">
+                    <h2>When</h2>
+                    <p>Wedding Ceremony - 2:00pm</p>
+                    <p>Reception & Dinner - 5:00pm</p>
+                </div>
+                <div class="w3-half">
+                    <h2>Where</h2>
+                    <p>Some place, an address</p>
+                    <p>Some where, some address</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RSVP section -->
+    <div class="w3-container w3-padding-64 w3-pale-red w3-center w3-wide" id="rsvp">
+        <h1>HOPE YOU CAN MAKE IT!</h1>
+        <p style="font-size:30px">Kindly Respond By January, 2017</p>
+        <p style="font-size:50px"> Click on RSVP below to Book a seat</p>
+        <p class="w3-xlarge">
+            <button onclick="document.getElementById('id01').style.display='block'"
+                class="w3-button w3-round w3-red w3-opacity w3-hover-opacity-off" style="padding:8px 60px">RSVP</button>
+        </p>
+    </div>
+    <br>
+    <!-- Contact section-->
+    <div class="w3-container w3-padding-64 w3-pale-red w3-center w3-wide">
+        <h1 style="font-weight:bold">Contact the couple</h1>
+        <form name="Well wishes and messages" method="POST" data-netlify="true">
+          <p>
+          <label style="font-size:35px">Enter Your Name: <input type="text" name="name" style="width:100%" /></label>
+         </p>
+          <p>
+          <label style="font-size:35px">Send your best wishes: <input type="text" name="Message" style="width:100%" /></label>
+          </p>
+           <p>
+            <button type="submit" style="color:red">Send</button>
+            </p>
+        </form>
+    </div>
+    <!-- RSVP modal -->
+    <div id="id01" class="w3-modal">
+        <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="padding:32px;max-width:600px">
+                <form name="Wedding attendees" method="POST" data-netlify="true">
+                  <p style="color:red">All fields are neccessary please *</p>
+                  <p style="color:red">Fill form within 30 seconds *</p>
+
+                  <p>
+                  <label>Enter Your Name: <input type="text" name="name" style="width:100%"/></label>
+                 </p>
+                 <p>
+                  <label>Email/Phone number: <input type="email;tel" name="contact" style="width:100%"/></label>
+                  </p>
+                 <p>
+                  <label>Will you be attending the wedding: <select name="Available"
+                    <I Love You Elsie>
+                    <option value="Yes,I will attend">Yes, of course I will</option>
+                   <option value="No, I won't">No, unfortunately</option>
+                    </select></label>
+                   </p>
+                   <p>
+                    <button type="submit">Send</button>
+                    </p>
+                   </form>
+        </div>
+    </div>
+      <div>
+         <h2  class="w3-center">Photoshoot Gallery and Down the Memory Lane</h2>
+          <!--class="w3-content w3-section" -->
+         <div  class="w3-round w3-grayscale-min" style="width:100%">
+         <img class="mySlides" src="img_la.jpg" style="width:100%">
+         <img class="mySlides" src="img_ny.jpg" style="width:100%">
+         <img class="mySlides" src="img_chicago.jpg" style="width:100%">
+         <img class="mySlides" src="picture8.jpeg" style="width:100%">
+         <img class="mySlides" src="img_chicago.jpg" style="width:100%">
+         <img class="mySlides" src="img_chicago.jpg" style="width:100%">
+         <img class="mySlides" src="img_chicago.jpg" style="width:100%">
+         <img class="mySlides" src="picture8.jpeg" style="width:100%">
+         <img class="mySlides" src="img_ny.jpg" style="width:100%">
+         <img class="mySlides" src="img_ny.jpg" style="width:100%">
+
+         </div>
+
+         <script>
+          var myIndex = 0;
+          carousel();
+
+           function carousel() {
+           var i;
+           var x = document.getElementsByClassName("mySlides");
+            for (i = 0; i < x.length; i++) {
+           x[i].style.display = "none";
+           }
+           myIndex++;
+           if (myIndex > x.length) {myIndex = 1}
+           x[myIndex-1].style.display = "block";
+           setTimeout(carousel, 2000); // Change image every 2 seconds
+           }
+          </script>
+
+
+
+
+    <!-- Footer
+    <footer class="w3-center w3-black w3-padding-16">
+        <p6>Powered by w3schools
+        Credits
+        Photo by <a href="https://unsplash.com/@anniespratt?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Annie Spratt</a>
+        on <a href="https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a> </p6>
+    </footer>
+    <div class="w3-hide-small" style="margin-bottom:22px"> </div>
+-->
+
+
+
+
+</body>
+
+</html>
