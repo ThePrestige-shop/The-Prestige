@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>J.K Daniels Blog</title>
+    <link rel="icon" type="image/x-icon" href="../bird.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../styles.css" type="text/css">
+    <script src="../script.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <style>
+    body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+    </style>
+  </head>
+  <body>
+
+  <!-- w3-content defines a container for fixed size centered content,
+  and is wrapped around the whole page content, except for the footer in this example -->
+  <div class="w3-content" style="max-width:1400px">
+
+  <!-- Header -->
+  <header class="w3-container w3-center w3-padding-32">
+    <h1><b>MY BLOG</b></h1>
+    <p>Welcome to the blog of <span class="w3-tag"><a href="https://the-prestige.netlify.app/" > Prestige </a></span> </p>
+  </header>
+
+  <!-- Grid -->
+  <div class="w3-row">
+
+  <!-- Blog entries -->
+  <div class="w3-col 18 s12">
+
+    <!-- Blog entry -->
+    <div class="w3-card-4 w3-margin w3-white">
+        <img src="../aplori.jpg" alt="Group picture" style="width:100%">
+      <div class="w3-container">
+        <h3><b>APLORI in my view</b></h3>
+        <h5>Being an Ornithologist, <span class="w3-opacity">October 30, 2022</span></h5>
+      </div>
+
+      <div class="w3-container">
+        <p>APLORI!, the popular name of the A.P. Leventis Ornithological Institute, in this short write up I will describe my experience so far studying Ornithology at the institute. Well starting from the beginning, I knew this was the foremost institute for ornithology in the whole of West Africa, I knew so many greats had passed through this place, in fact my introduction to Aplori back in 2015 came through a former student of Aplori. It has really been an exhausting journey but all worthwhile, the lecturers I have met here are some of the bests in the world at what they do, my class mates and the Nigerian community have all been so welcoming especially as I am a foreigner in the country. We went on bird walks each morning for six months, wow, it was not easy but we sailed through. After exams I thought I was free for a while, but the stress of proposal write-up set in. Aplori is stressful, I know this because I have experienced it myself. I believe that is what makes student who pass out of here standard. The system will fine tune you into becoming a great conservationist, I can certainly confirm this.</p>
+        <div class="w3-row">
+          <div class="w3-col m8 s12">
+            <p><button class="w3-button w3-padding-large w3-white w3-border"><b>READ MORE »</b></button></p>
+          </div>
+          <div class="w3-col m4 w3-hide-small">
+            <p><span class="w3-padding-large w3-right"><b>Comments  </b> <span class="w3-tag">0</span></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+
+
+
+  <!-- END BLOG ENTRIES -->
+
+  </div>
+  <!-- Footer. This section contains an ad for W3Schools Spaces. You can leave it to support us. -->
+  <footer class="w3-container w3-dark-grey w3-padding-32 w3-margin-top">
+    <button class="w3-button w3-black  w3-padding-large w3-margin-bottom"><a href="blog2.html" class="w3-bar-item w3-button" >Previous</button>
+    <button class="w3-button w3-black w3-padding-large w3-margin-bottom"><a href="blog4.html" class="w3-bar-item w3-button" >Next »</button>
+    <p href="https://www.w3schools.com/spaces" class="w3-small">This website was made with W3schools Spaces. Make your own free website today!</p>
+    <!-- End footer. -->
+    </footer>
+
+    <script>
+    // Modal Image Gallery
+    function onClick(element) {
+      document.getElementById("img01").src = element.src;
+      document.getElementById("modal01").style.display = "block";
+      var captionText = document.getElementById("caption");
+      captionText.innerHTML = element.alt;
+    }
+
+    </script>
+  </body>
+  </html>
