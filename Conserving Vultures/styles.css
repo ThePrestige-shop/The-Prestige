@@ -71,11 +71,6 @@
   transform: translate(0, -100%);
 }
 
-.boxer {
-  position: relative;
-  text-align: center;
-  color: black;
-}
 
 /* Bottom left text */
 .bottom-left {
@@ -84,10 +79,7 @@
   left: 16px;
 }
 
-.content {
-  max-width: 90%;
-  z-index: 99000
-}
+
 
 
 /* W3.CSS 4.15 December 2020 by Jan Egil and Borge Refsnes */

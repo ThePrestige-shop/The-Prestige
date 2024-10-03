@@ -38,8 +38,8 @@
         <!-- Right-sided navbar links -->
         <div class="w3-right w3-hide-small">
           <a href="#vultures" class="w3-bar-item w3-button"><i class="fa fa-th"></i>VULTURES</a>
-            <a href="#help" class="w3-bar-item w3-button"><img src="fa fa-cloud"/></i>HELP</a>
-          <a href="#projects" class="w3-bar-item w3-button"><img src="fa fa-th"/></i>PROJECTS</a>
+            <a href="#help" class="w3-bar-item w3-button"><img class="fa fa-cloud"/></i>HELP</a>
+          <a href="#projects" class="w3-bar-item w3-button"><img class="fa fa-th"/></i>PROJECTS</a>
           <a href="#contact" class="w3-bar-item w3-button"><i class="fa fa-envelope"></i>CONTACT</a>
         </div>
 
@@ -52,7 +52,7 @@
       </div>
 
 
-    <!-- Top menu on small screens -->
+    <!-- Sidebar on small screens when clicking the menu icon  -->
     <nav class="w3-sidebar w3-bar-block w3-black w3-card w3-animate-left w3-hide-medium w3-hide-large" style="display: none;" id="mySidebar">
       <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">Close ×</a>
       <a href="#vultures" onclick="w3_close()" class="w3-bar-item w3-button">VULTURES</a>
@@ -149,47 +149,13 @@
 
             <!-- RSVP section -->
             <div class="w3-container w3-padding-64 w3-pale-red w3-center w3-wide" id="rsvp">
-                <h1>Seen a vulture or what to report a perpetrator?</h1>
-                <p style="font-size:30px">Kindly Report the sighting here</p>
+                <h1>Seen a vulture or you want to report a perpetrator?</h1>
                 <p style="font-size:50px"> Click on Report</p>
                 <p class="w3-xlarge">
-                    <button onclick="document.getElementById('id01').style.display='block'"
-                        class="w3-button w3-round w3-red w3-opacity w3-hover-opacity-off" style="padding:8px 60px">RSVP</button>
+                    <a href="Report/index" class="w3-button w3-round w3-red w3-opacity w3-hover-opacity-off" style="padding:8px 60px">Report</a>
                 </p>
             </div>
-            <!-- RSVP modal -->
-            <div id="id01" class="w3-modal">
-                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="padding:32px;max-width:600px">
-                        <form name="Wedding attendees" method="POST" data-netlify="true">
-                          <p style="color:red">All fields are neccessary please *</p>
-                          <p style="color:red">Click send to leave form *</p>
 
-                          <p>
-                            <div id="demo">
-                              <p>Click the button to get your coordinates.</p>
-
-<button onclick="getLocation()">Try It</button>
-
-<p id="demo"></p>
-                          <label>Enter Your Name: <input type="text" name="name" style="width:100%"/></label>
-                         </p>
-                         <p>
-                          <label>Email/Phone number: <input type="email;tel" name="contact" style="width:100%"/></label>
-                          </p>
-                         <p>
-                          <label>Will you be attending the wedding: <select name="Available"
-                            <I Love You Elsie>
-                            <option value="Yes,I will attend">Yes, of course I will</option>
-                           <option value="No, I won't">No, unfortunately</option>
-                            </select></label>
-                           </p>
-                           </div>
-                           <p>
-                            <button type="submit">Send</button>
-                            </p>
-                           </form>
-                </div>
-              </div>
         <!-- Contact section -->
         <div class="w3-container w3-light-grey w3-padding-32 w3-padding-large" id="contact">
             <div class="w3-content" style="max-width:600px">
@@ -214,11 +180,12 @@
 
         <!-- Footer -->
         <footer class="w3-container w3-padding-32 w3-grey">
-            <div class="w3-row-padding">
+
                 <div class="w3-third">
                     <h3>INFO</h3>
-                    <p>Praesent tincidunt sed tellus ut rutrum. Sed vitae justo condimentum, porta lectus vitae,
-                        ultricies congue gravida diam non fringilla.</p>
+                    <p>This website (www.conservingvultures) is dedicated to protecting vulture species, with emphasis now
+                      on West African vultures. We are based in Ghana and contribute our quota to conserve the six predominant
+                      vulture species in Ghana. This website is possible through funding from the "Rufford Foundation." </p>
                 </div>
 
                 <div class="w3-third">
@@ -256,30 +223,15 @@
                             class="w3-tag w3-dark-grey w3-small w3-margin-bottom">Games</span>
                     </p>
                 </div>
-            </div>
         </footer>
 
         <div class="w3-black w3-center w3-padding-24">Made with <a href="https://www.w3schools.com/spaces" title="spaces" target="_blank" class="w3-hover-opacity">W3Schools Spaces</a></div>
 
 
         <!-- End page content -->
-    </div>
+
 
     <script>
-    var mySidebar = document.getElementById("mySidebar");
-
-    function w3_open() {
-      if (mySidebar.style.display === 'block') {
-        mySidebar.style.display = 'none';
-      } else {
-        mySidebar.style.display = 'block';
-      }
-    }
-
-    // Close the sidebar with the close button
-    function w3_close() {
-        mySidebar.style.display = "none";
-    }
 
         // Modal Image Gallery
         function onClick(element) {
@@ -289,18 +241,20 @@
             captionText.innerHTML = element.alt;
         }
 
-        const x = document.getElementById("demo");
-        function getLocation() {
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
+
+        var mySidebar = document.getElementById("mySidebar");
+
+        function w3_open() {
+          if (mySidebar.style.display === 'block') {
+            mySidebar.style.display = 'none';
           } else {
-            x.innerHTML = "Geolocation is not supported by this browser.";
+            mySidebar.style.display = 'block';
           }
         }
 
-        function showPosition(position) {
-          x.innerHTML = "Latitude: " + position.coords.latitude +
-          "<br>Longitude: " + position.coords.longitude;
+        // Close the sidebar with the close button
+        function w3_close() {
+            mySidebar.style.display = "none";
         }
     </script>
 

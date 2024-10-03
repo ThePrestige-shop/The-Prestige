@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<body class="w3-light-grey w3-content" style="max-width:1600px">
+
+<!-- RSVP modal -->
+<div class="w3-container">
+<div id="id01" class="w3-modal">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="padding:32px;max-width:600px">
+            <form name="Report a sighting or perpetrator" method="POST" data-netlify="true">
+            <h2>  <p style="color:red">All fields are neccessary please *</p></h2>
+            <h3>  <p style="color:red">Click send to leave form *</p></h3>
+              <p>
+                <div id="demo">
+                  <p>Click the button to get your coordinates, fill the form and submit.</p>
+
+                    <button onclick="getLocation()">Get Co-ordinates</button>
+
+                       <p id="demo"></p>
+              <label>Enter Your Coordinates: <input type="text" name="name" style="width:100%"/></label>
+             </p>
+             <p>
+              <label>Email/Phone number: <input type="email;tel" name="contact" style="width:100%"/></label>
+              </p>
+             <p>
+              <label>Dis you see a vulture?: <select name="Available"
+                <I Love You Elsie>
+                <option value="Yes,I will attend">Yes</option>
+               <option value="No, I won't">No, unfortunately it was a perpetrator</option>
+                </select></label>
+               </p>
+               </div>
+               <p>
+                <button type="submit">Send</button>
+                </p>
+               </form>
+    </div>
+  </div>
+</div>
+<footer>
+
+  </footer>
+
+  <script>
+
+    const x = document.getElementById("demo");
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+    }
+
+    function showPosition(position) {
+      x.innerHTML = "Latitude: " + position.coords.latitude +
+      "<br>Longitude: " + position.coords.longitude;
+    }
+
+
+    const x = document.getElementById("demo");
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+    }
+
+    function showPosition(position) {
+      x.innerHTML = "Latitude: " + position.coords.latitude +
+      "<br>Longitude: " + position.coords.longitude;
+    }
+  </script>
+
+  </body>
+
+  </html>
