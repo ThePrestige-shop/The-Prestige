@@ -15,10 +15,20 @@
   left: 50%;
   position: relative;
   align-content: center;
-  align-items: flex-end;
+  align-items: center;
   top: 200px;
   transform: translate(-50%, -50%);
   width: 130vmin;
+}
+
+@media screen and (max-width: 1024px) {
+  .animated-title {
+    height: 80vmin;
+    top: 210px;
+    width: 100%;
+    position: relative;
+    align-content: center;
+  }
 }
 
 .animated-title > div {
