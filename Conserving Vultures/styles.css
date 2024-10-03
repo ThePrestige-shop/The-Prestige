@@ -71,7 +71,18 @@
   transform: translate(0, -100%);
 }
 
+.boxer {
+  position: relative;
+  text-align: center;
+  color: black;
+}
 
+/* Bottom left text */
+.bottom-left {
+  position: relative;
+  bottom: 8px;
+  left: 16px;
+}
 
 .content {
   max-width: 90%;
