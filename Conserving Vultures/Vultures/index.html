@@ -6,7 +6,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="styles.css" type="text/css">
         <script defer src="script.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <style>
             body,
             h1,
@@ -14,7 +13,7 @@
             h3,
             h4,
             h5 {
-                font-family: "Raleway", sans-serif
+                font-family:  "Raleway"; sans-serif;
             }
 
             .w3-third img {
@@ -29,7 +28,6 @@
         </style>
     </head>
 <body class="w3-light-grey w3-content" style="max-width:1600px">
-
 <!-- Navbar (sit on top) -->
     <div class="w3-top">
       <div class="w3-bar w3-white w3-card" id="myNavbar">
@@ -37,16 +35,16 @@
 
         <!-- Right-sided navbar links -->
         <div class="w3-right w3-hide-small">
-          <a href="www.conservingvultures.org" class="w3-bar-item w3-button"><i class="fa fa-home"></i>HOME</a>
-            <a href="www.conservingvultures.org/help" class="w3-bar-item w3-button"><i class="fa fa-handshake-o"></i>HELP</a>
-          <a href="www.conservingvultures.org/projects" class="w3-bar-item w3-button"><i class="fa fa-laptop"></i>PROJECTS</a>
-          <a href="www.conservingvultures.org/report" class="w3-bar-item w3-button"><i class="fa fa-database"></i>REPORT</a>
+          <a href="www.conservingvultures.org" class="w3-bar-item w3-button"><img src="../vulture.png"/>HOME</a>
+            <a href="www.conservingvultures.org/help" class="w3-bar-item w3-button"><img src="../help.png">HELP</a>
+          <a href="www.conservingvultures.org/projects" class="w3-bar-item w3-button"><img src="../project.png">PROJECTS</a>
+          <a href="www.conservingvultures.org/report" class="w3-bar-item w3-button"><img src="../report.png">REPORT</a>
         </div>
 
 
         <!-- Hide right-floated links on small screens and replace them with a menu icon -->
           <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
-            <i class="fa fa-bars"></i>
+            <img src="../bars.png">
           </a>
         </div>
       </div>
@@ -81,7 +79,7 @@
                   </div>
                   <div class="hidden1">
                   <div class="new1">
-                <img src="../White-headed_vulture.jpg" style="width:100%" onclick="onClick(this)"
+                <img src="../Egyptian_vulture.jpg" style="width:100%" onclick="onClick(this)"
                     alt="Cinereous Vulture (Aegypius monachus)">
                         <div class="card1">
                           <p> <a href="https://www.iucnredlist.org/species/22695185/204974761"
@@ -90,11 +88,11 @@
                         </div>
                       </div>
                     </div>
-
+</div>
             <div class="w3-third">
               <div class="hidden1">
               <div class="new1">
-            <img src="../White-headed_vulture.jpg" style="width:100%" onclick="onClick(this)"
+            <img src="../Egyptian_vulture.jpg" style="width:100%" onclick="onClick(this)"
                 alt="Griffon Vulture (Gyps fulvus)">
                     <div class="card1">
                       <p> <a href="https://www.iucnredlist.org/species/22695185/204974761"
@@ -105,7 +103,7 @@
                 </div>
                 <div class="hidden">
                   <div class="new1">
-                <img src="../White-headed_vulture.jpg" style="width:100%" onclick="onClick(this)"
+                <img src="../Egyptian_vulture.jpg" style="width:100%" onclick="onClick(this)"
                     alt="Bearded Vulture (Gypaetus barbatus)">
                         <div class="card1">
                           <p> <a href="https://www.iucnredlist.org/species/22695185/204974761"
@@ -115,11 +113,10 @@
                       </div>
                     </div>
             </div>
-
             <div class="w3-third">
               <div class="hidden">
               <div class="new1">
-            <img src="../White-headed_vulture.jpg" style="width:100%" onclick="onClick(this)"
+            <img src="../Egyptian_vulture.jpg" style="width:100%" onclick="onClick(this)"
                 alt="Cape Vulture (Gyps coprotheres)">
                     <div class="card1">
                       <p> <a href="https://www.iucnredlist.org/species/22695185/204974761"
@@ -130,7 +127,7 @@
                 </div>
                 <div class="hidden1">
                   <div class="new1">
-                <img src="../White-headed_vulture.jpg" style="width:100%" onclick="onClick(this)"
+                <img src="../Egyptian_vulture.jpg" style="width:100%" onclick="onClick(this)"
                     alt="Rüppell's Vulture (Gyps rueppelli)">
                         <div class="card1">
                           <p> <a href="https://www.iucnredlist.org/species/22695185/204974761"
@@ -142,16 +139,15 @@
             </div>
         </div>
       </div>
-
           <script>
+            // Modal Image Gallery
+            function onClick(element) {
+                document.getElementById("img01").src = element.src;
+                document.getElementById("modal01").style.display = "block";
+                var captionText = document.getElementById("caption");
+                captionText.innerHTML = element.alt;
+            }
 
-              // Modal Image Gallery
-              function onClick(element) {
-                  document.getElementById("img01").src = element.src;
-                  document.getElementById("modal01").style.display = "block";
-                  var captionText = document.getElementById("caption");
-                  captionText.innerHTML = element.alt;
-              }
 
 
               var mySidebar = document.getElementById("mySidebar");
