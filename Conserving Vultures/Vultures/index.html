@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Conserving Vultures</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="styles.css" type="text/css">
+        <script defer src="script.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <style>
+            body,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5 {
+                font-family: "Raleway", sans-serif
+            }
+
+            .w3-third img {
+                margin-bottom: -6px;
+                opacity: 0.8;
+                cursor: pointer
+            }
+
+            .w3-third img:hover {
+                opacity: 1
+            }
+        </style>
+    </head>
+<body class="w3-light-grey w3-content" style="max-width:1600px">
+
+<!-- Navbar (sit on top) -->
+    <div class="w3-top">
+      <div class="w3-bar w3-white w3-card" id="myNavbar">
+        <a href="www.conservingvultures.org" class="w3-bar-item w3-button w3-wide"><img src="../bird.png"/>CONSERVING VULTURES</a>
+
+        <!-- Right-sided navbar links -->
+        <div class="w3-right w3-hide-small">
+          <a href="www.conservingvultures.org" class="w3-bar-item w3-button"><i class="fa fa-home"></i>HOME</a>
+            <a href="www.conservingvultures.org/help" class="w3-bar-item w3-button"><i class="fa fa-handshake-o"></i>HELP</a>
+          <a href="www.conservingvultures.org/projects" class="w3-bar-item w3-button"><i class="fa fa-laptop"></i>PROJECTS</a>
+          <a href="www.conservingvultures.org/report" class="w3-bar-item w3-button"><i class="fa fa-database"></i>REPORT</a>
+        </div>
+
+
+        <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+          <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
+            <i class="fa fa-bars"></i>
+          </a>
+        </div>
+      </div>
+
+
+    <!-- Sidebar on small screens when clicking the menu icon  -->
+    <nav class="w3-sidebar w3-bar-block w3-black w3-card w3-animate-left w3-hide-medium w3-hide-large" style="display: none;" id="mySidebar">
+      <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">Close ×</a>
+      <a href="www.conservingvultures.org" onclick="w3_close()" class="w3-bar-item w3-button">HOME</a>
+      <a href="www.conservingvultures.org/help" onclick="w3_close()" class="w3-bar-item w3-button">HELP</a>
+      <a href="www.conservingvultures.org/projects" onclick="w3_close()" class="w3-bar-item w3-button">PROJECTS</a>
+      <a href="www.conservingvultures.org/report" onclick="w3_close()" class="w3-bar-item w3-button">REPORT</a>
+    </nav>
+
+<header id="home" style="padding:40px;"> </header>
+
+
+        <!-- Photo grid -->
+        <div>
+        <div class="w3-row" id= "vultures">
+            <div class="w3-third">
+              <div class="hidden">
+                <div class="new1">
+                  <img src="../Egyptian_vulture.jpg" style="width:100%" onclick="onClick(this)"
+                    alt="Hooded Vulture (Necrosyrtes monachus)">
+                    <div class="card1">
+                      <p> <a href="https://www.iucnredlist.org/species/22695185/204974761"
+                        class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity
+                        w3-hover-opacity-off">Hooded Vulture</a></p>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="hidden1">
+                  <div class="new1">
+                <img src="../White-headed_vulture.jpg" style="width:100%" onclick="onClick(this)"
+                    alt="Lappet-faced Vulture (Torgos tracheliotos)">
+                        <div class="card1">
+                          <p> <a href="https://www.iucnredlist.org/species/22695185/204974761"
+                            class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity
+                            w3-hover-opacity-off">Lappet-faced Vulture</a></p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="hidden">
+                      <div class="new1">
+                    <img src="../White-headed_vulture.jpg" style="width:100%" onclick="onClick(this)"
+                        alt="Lappet-faced Vulture (Torgos tracheliotos)">
+                            <div class="card1">
+                              <p> <a href="https://www.iucnredlist.org/species/22695185/204974761"
+                                class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity
+                                w3-hover-opacity-off">Cinereous Vulture</a></p>
+                            </div>
+                          </div>
+                        </div>
+            </div>
+
+            <div class="w3-third">
+              <div class="hidden1">
+              <div class="new1">
+            <img src="../White-headed_vulture.jpg" style="width:100%" onclick="onClick(this)"
+                alt="Lappet-faced Vulture (Torgos tracheliotos)">
+                    <div class="card1">
+                      <p> <a href="https://www.iucnredlist.org/species/22695185/204974761"
+                        class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity
+                        w3-hover-opacity-off">White-headed Vulture</a></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="hidden">
+                  <div class="new1">
+                <img src="../White-headed_vulture.jpg" style="width:100%" onclick="onClick(this)"
+                    alt="Lappet-faced Vulture (Torgos tracheliotos)">
+                        <div class="card1">
+                          <p> <a href="https://www.iucnredlist.org/species/22695185/204974761"
+                            class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity
+                            w3-hover-opacity-off">Egyptian Vulture</a></p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="hidden1">
+                      <div class="new1">
+                    <img src="../White-headed_vulture.jpg" style="width:100%" onclick="onClick(this)"
+                        alt="Lappet-faced Vulture (Torgos tracheliotos)">
+                            <div class="card1">
+                              <p> <a href="https://www.iucnredlist.org/species/22695185/204974761"
+                                class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity
+                                w3-hover-opacity-off">Palm-nut Vulture</a></p>
+                            </div>
+                          </div>
+                        </div>
+            </div>
+
+            <div class="w3-third">
+              <div class="hidden">
+              <div class="new1">
+            <img src="../White-headed_vulture.jpg" style="width:100%" onclick="onClick(this)"
+                alt="Lappet-faced Vulture (Torgos tracheliotos)">
+                    <div class="card1">
+                      <p> <a href="https://www.iucnredlist.org/species/22695185/204974761"
+                        class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity
+                        w3-hover-opacity-off">White-backed Vulture</a></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="hidden1">
+                  <div class="new1">
+                <img src="../White-headed_vulture.jpg" style="width:100%" onclick="onClick(this)"
+                    alt="Lappet-faced Vulture (Torgos tracheliotos)">
+                        <div class="card1">
+                          <p> <a href="https://www.iucnredlist.org/species/22695185/204974761"
+                            class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity
+                            w3-hover-opacity-off">Rueppell's Vulture</a></p>
+                        </div>
+                      </div>
+                    </div>
+                        <div class="hidden">
+                      <div class="new1">
+                    <img src="../White-headed_vulture.jpg" style="width:100%" onclick="onClick(this)"
+                        alt="Lappet-faced Vulture (Torgos tracheliotos)">
+                            <div class="card1">
+                              <p> <a href="https://www.iucnredlist.org/species/22695185/204974761"
+                                class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity
+                                w3-hover-opacity-off">Griffon Vulture</a></p>
+                            </div>
+                          </div>
+                        </div>
+            </div>
+        </div>
+      </div>
+
+          <script>
+
+              // Modal Image Gallery
+              function onClick(element) {
+                  document.getElementById("img01").src = element.src;
+                  document.getElementById("modal01").style.display = "block";
+                  var captionText = document.getElementById("caption");
+                  captionText.innerHTML = element.alt;
+              }
+
+
+              var mySidebar = document.getElementById("mySidebar");
+
+              function w3_open() {
+                if (mySidebar.style.display === 'block') {
+                  mySidebar.style.display = 'none';
+                } else {
+                  mySidebar.style.display = 'block';
+                }
+              }
+
+              // Close the sidebar with the close button
+              function w3_close() {
+                  mySidebar.style.display = "none";
+              }
+
+
+          </script>
+
+
+      </body>
+
+      </html>
