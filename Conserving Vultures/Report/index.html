@@ -27,13 +27,11 @@
     <div class="w3-bar w3-black">
       <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Flight');"><img src="../binocular.png"/>Report a vulture sighting</button>
       <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Hotel');"><img src="../report.png"/>Report a perpetrator</button>
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Car');"><img src="../project.png"/>Send a message</button>
     </div>
 
     <!-- Tabs -->
     <div id="Flight" class="w3-container w3-white myLink">
-      <h3 class="w3-center">Have you seen a vulture?</h3>
-      <p class="w3-center">Tell us more about it.</p>
+      <h3 class="w3-center">Have you seen a vulture? Tell us more about it.</h3>
 
       <div class=" w3-center">
           <form name="Well wishes and messages" method="POST" data-netlify="true">
@@ -53,19 +51,30 @@
     </div>
 
     <div id="Hotel" class="w3-container w3-white w3-padding-16 myLink">
-      <h3>Find the best hotels</h3>
-      <p>Book a hotel with us and get the best fares and promotions.</p>
-      <p>We know hotels - we know comfort.</p>
-      <p><button class="w3-button w3-dark-grey">Search Hotels</button></p>
+      <h3 class="w3-center">Have you seen someone hunting vultures or taking eggs?</h3>
+      <h3 class="w3-center">Tell us more about it.</h3>
+
+      <div class=" w3-center">
+          <form name="Well wishes and messages" method="POST" data-netlify="true">
+            <button onclick="getLocation()">Get location</button>
+            <p id="demo"></p>
+            <p>
+            <label style="font-size:25px">What was the person doing?<input type="text" name="species" style="width:50%" /></label>
+           </p>
+           <p>
+            <label style="font-size:25px">Did you confront the perpetrator? <select name="Available"
+              <New>
+              <option value="Yes,I will attend">Yes</option>
+             <option value="No, I won't">No, unfortunately</option>
+              </select></label>
+             </p>
+             <p>
+              <button type="submit" style="color:red">Send</button>
+              </p>
+          </form>
+      </div>
     </div>
 
-    <div id="Car" class="w3-container w3-white w3-padding-16 myLink">
-      <h3>Best car rental in the world!</h3>
-      <p><span class="w3-tag w3-deep-orange">DISCOUNT!</span> Special offer if you book today: 25% off anywhere in the world with CarServiceRentalRUs</p>
-      <input class="w3-input w3-border" type="text" placeholder="Pick-up point">
-      <p><button class="w3-button w3-dark-grey">Search Availability</button></p>
-    </div>
-  </div>
 
 </section>
 
