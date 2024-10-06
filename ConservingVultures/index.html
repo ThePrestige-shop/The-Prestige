@@ -222,6 +222,9 @@
                               <p>
                               <label style="font-size:25px">What vulture species did you see?<input type="text" name="species" style="width:50%" /></label>
                              </p>
+                             <p>
+                             <label style="font-size:25px">Enter your location<input type="text" name="location" style="width:50%" /></label>
+                             </p>
                               <p>
                               <label style="font-size:25px">How many did you see? <input type="text" name="number" style="width:50%" /></label>
                               </p>
@@ -235,13 +238,13 @@
                       <div id="Hotel" class="w3-container w3-white w3-padding-16 myLink">
                         <h3 class="w3-center">Have you seen someone hunting vultures or taking eggs?</h3>
                         <h3 class="w3-center">Tell us more about it.</h3>
-
                         <div class=" w3-center">
                             <form name="Well wishes and messages" method="POST" data-netlify="true">
-                              <button onclick="getLocation()">Get location</button>
-                              <p id="demo"></p>
                               <p>
                               <label style="font-size:25px">What was the person doing?<input type="text" name="species" style="width:50%" /></label>
+                             </p>
+                             <p>
+                             <label style="font-size:25px">Enter the location<input type="text" name="location" style="width:50%" /></label>
                              </p>
                              <p>
                               <label style="font-size:25px">Did you confront the perpetrator? <select name="Available"
@@ -256,29 +259,11 @@
                             </form>
                         </div>
                       </div>
-
-
                   </section>
 
                 </div>
             </div>
-            <form name="Well wishes and messages" method="POST" data-netlify="true">
-              <button onclick="getLocation()">Get location</button>
-              <p id="demo"></p>
-              <p>
-              <label style="font-size:25px">What was the person doing?<input type="text" name="species" style="width:50%" /></label>
-             </p>
-             <p>
-              <label style="font-size:25px">Did you confront the perpetrator? <select name="Available"
-                <New>
-                <option value="Yes,I will attend">Yes</option>
-               <option value="No, I won't">No, unfortunately</option>
-                </select></label>
-               </p>
-               <p>
-                <button type="submit" style="color:red">Send</button>
-                </p>
-            </form>
+
         <!-- Contact section -->
         <div class="w3-container w3-dark-grey w3-center w3-text-light-grey w3-padding-32" id="help">
   <div class="w3-content w3-leftalign" style="max-width:1200px">
@@ -357,21 +342,6 @@
 
         // Click on the first tablink on load
         document.getElementsByClassName("tablink")[0].click();
-
-        const y = document.getElementById("demo");
-
-        function getLocation() {
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-          } else {
-            y.innerHTML = "Geolocation is not supported by this browser.";
-          }
-        }
-
-        function showPosition(position) {
-          y.innerHTML = "Latitude: " + position.coords.latitude +
-          "<br>Longitude: " + position.coords.longitude;
-        }
     </script>
 
 
