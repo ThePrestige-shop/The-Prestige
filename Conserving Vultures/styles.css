@@ -10,23 +10,20 @@
 .animated-title {
   color: #222;
   font-family: Roboto, Arial, sans-serif;
-  height: 46vmin;
+  height: 35vmin;
   left: 50%;
   position: relative;
   align-content: center;
   align-items: center;
-  top: 200px;
+  top: 170px;
   transform: translate(-50%, -50%);
   width: 100%;
 }
 
 @media screen and (max-width: 999px) {
   .animated-title {
-    height: 80vmin;
+    height: 72vmin;
     top: 210px;
-    width: 100%;
-    position: relative;
-    align-content: center;
   }
 }
 
