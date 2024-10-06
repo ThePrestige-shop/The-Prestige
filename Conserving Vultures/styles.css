@@ -24,7 +24,7 @@
 @media screen and (max-width: 999px) {
   .animated-title {
     width: 100%;
-    height: 72vmin;
+    height: 80vmin;
     top: 210px;
   }
 }
