@@ -200,8 +200,67 @@
                 <h1>Seen a vulture or you want to report a perpetrator?</h1>
                 <p style="font-size:50px"> Click on Report</p>
                 <p class="w3-xlarge">
-                    <a href="Report/index" class="w3-button w3-round w3-red w3-opacity w3-hover-opacity-off" style="padding:8px 60px">Report</a>
-                </p>
+                  <button onclick="document.getElementById('id01').style.display='block'"
+                      class="w3-button w3-round w3-red w3-opacity w3-hover-opacity-off" style="padding:8px 60px">Report</button>               </p>
+            </div>
+
+            <div id="id01" class="w3-modal">
+                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="padding:32px;max-width:600px">
+                  <section>
+
+                      <div class="w3-bar w3-black">
+                        <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Flight');"><img src="binocular.png"/>Report a vulture sighting</button>
+                        <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Hotel');"><img src="report.png"/>Report a perpetrator</button>
+                      </div>
+
+                      <!-- Tabs -->
+                      <div id="Flight" class="w3-container w3-white myLink">
+                        <h3 class="w3-center">Have you seen a vulture? Tell us more about it.</h3>
+
+                        <div class=" w3-center">
+                            <form name="Well wishes and messages" method="POST" data-netlify="true">
+                              <p>
+                              <label style="font-size:25px">What vulture species did you see?<input type="text" name="species" style="width:50%" /></label>
+                             </p>
+                              <p>
+                              <label style="font-size:25px">How many did you see? <input type="text" name="number" style="width:50%" /></label>
+                              </p>
+                               <p>
+                                <button type="submit" style="color:red">Send</button>
+                                </p>
+                            </form>
+                        </div>
+                      </div>
+
+                      <div id="Hotel" class="w3-container w3-white w3-padding-16 myLink">
+                        <h3 class="w3-center">Have you seen someone hunting vultures or taking eggs?</h3>
+                        <h3 class="w3-center">Tell us more about it.</h3>
+
+                        <div class=" w3-center">
+                            <form name="Well wishes and messages" method="POST" data-netlify="true">
+                              <button onclick="getLocation()">Get location</button>
+                              <p id="demo"></p>
+                              <p>
+                              <label style="font-size:25px">What was the person doing?<input type="text" name="species" style="width:50%" /></label>
+                             </p>
+                             <p>
+                              <label style="font-size:25px">Did you confront the perpetrator? <select name="Available"
+                                <New>
+                                <option value="Yes,I will attend">Yes</option>
+                               <option value="No, I won't">No, unfortunately</option>
+                                </select></label>
+                               </p>
+                               <p>
+                                <button type="submit" style="color:red">Send</button>
+                                </p>
+                            </form>
+                        </div>
+                      </div>
+
+
+                  </section>
+
+                </div>
             </div>
 
         <!-- Contact section -->
@@ -265,7 +324,38 @@
             mySidebar.style.display = "none";
         }
 
+        // Tabs
+        function openLink(evt, linkName) {
+          var i, x, tablinks;
+          x = document.getElementsByClassName("myLink");
+          for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablink");
+          for (i = 0; i < x.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
+          }
+          document.getElementById(linkName).style.display = "block";
+          evt.currentTarget.className += " w3-red";
+        }
 
+        // Click on the first tablink on load
+        document.getElementsByClassName("tablink")[0].click();
+
+        const y = document.getElementById("demo");
+
+        function getLocation() {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+          } else {
+            y.innerHTML = "Geolocation is not supported by this browser.";
+          }
+        }
+
+        function showPosition(position) {
+          y.innerHTML = "Latitude: " + position.coords.latitude +
+          "<br>Longitude: " + position.coords.longitude;
+        }
     </script>
 
 
