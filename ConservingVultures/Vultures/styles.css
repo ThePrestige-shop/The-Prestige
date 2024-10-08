@@ -21,7 +21,7 @@ section{
 }
 
 .hero{
-    background-image:url("Picture.jpg");
+    background-color: lightgreen;
     background-repeat: no-repeat;
     background-size: cover;
     height: 500px;
