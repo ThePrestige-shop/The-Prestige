@@ -135,7 +135,7 @@ h3{
 }
 .testimony{
     padding-bottom: 150px;
-    background-color: darkgrey;;
+    background-color: white;;
     overflow: hidden;
 
 }
@@ -162,6 +162,7 @@ h3{
 
 }
 .testimony-text{
+  color: black;
     width: 40%;
 
 }
