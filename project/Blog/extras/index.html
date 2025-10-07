@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Encrypted passworded chatbox (static)</title>
+  <style>
+    :root{--bg:#f3f4f6;--card:#ffffff;--accent:#0ea5a4;--muted:#6b7280}
+    html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#111;background:var(--bg)}
+    .screen{display:flex;align-items:center;justify-content:center;height:100vh}
+    .app{width:min(960px,96vw);height:min(760px,92vh);background:var(--card);box-shadow:0 10px 30px rgba(2,6,23,0.08);border-radius:12px;overflow:hidden;display:grid;grid-template-columns:320px 1fr}
+
+    /* left pane */
+    .sidebar{background:linear-gradient(180deg,#ffffff, #f8fafc);padding:18px;display:flex;flex-direction:column;gap:12px;border-right:1px solid rgba(15,23,42,0.04)}
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{width:44px;height:44px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+    .title{font-weight:700;font-size:16px}
+    .subtitle{font-size:12px;color:var(--muted)}
+    .people{margin-top:8px;display:flex;flex-direction:column;gap:8px}
+    .person{padding:8px;border-radius:8px;cursor:pointer;display:flex;gap:10px;align-items:center}
+    .person.selected{background:rgba(14,165,164,0.08)}
+    .person .dot{width:10px;height:10px;border-radius:50%;background:#94f9f6}
+
+    /* right pane */
+    .chat-area{display:flex;flex-direction:column}
+    .chat-header{padding:16px;border-bottom:1px solid rgba(2,6,23,0.04);display:flex;align-items:center;justify-content:space-between}
+    .chat-header .name{font-weight:700}
+    .messages{flex:1;padding:18px;overflow:auto;background:linear-gradient(180deg,#fbfdff, #ffffff)}
+    .msg{max-width:70%;margin-bottom:12px;padding:10px 12px;border-radius:12px;line-height:1.3}
+    .msg.left{background:#f1f5f9;border-top-left-radius:4px}
+    .msg.right{background:linear-gradient(90deg,var(--accent),#38bdf8);color:white;margin-left:auto;border-top-right-radius:4px}
+    .meta{font-size:11px;color:var(--muted);margin-top:6px}
+    .composer{display:flex;padding:12px;border-top:1px solid rgba(2,6,23,0.04);gap:8px}
+    .composer input[type="text"]{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(2,6,23,0.06);outline:none}
+    .btn{padding:10px 12px;border-radius:8px;border:none;background:var(--accent);color:white;cursor:pointer}
+    .btn.secondary{background:#eef2f2;color:#034d4c}
+    .small{font-size:13px}
+
+    /* password overlay */
+    .overlay{position:fixed;inset:0;background:rgba(2,6,23,0.65);display:flex;align-items:center;justify-content:center}
+    .pwcard{background:var(--card);padding:22px;border-radius:10px;width:420px;box-shadow:0 12px 40px rgba(2,6,23,0.2);text-align:center}
+    .pwcard h2{margin:0 0 8px}
+    .pwcard p{margin:0 0 18px;color:var(--muted);font-size:14px}
+    .pwcard input{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(2,6,23,0.06);margin-bottom:12px}
+    .note{font-size:12px;color:var(--muted)}
+
+    .hidden{display:none !important}
+
+    /* responsive */
+    @media (max-width:780px){.app{grid-template-columns:1fr}.sidebar{display:none}}
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div id="app" class="app hidden" role="application" aria-hidden="true">
+      <div class="sidebar">
+        <div class="brand">
+          <div class="logo">CH</div>
+          <div>
+            <div class="title">Encrypted ChatHub</div>
+            <div class="subtitle">Private, client-side encrypted demo</div>
+          </div>
+        </div>
+
+        <div class="people">
+          <div class="person selected" data-id="alice"><div class="dot"></div><div>Alex (You)</div></div>
+          <div class="person" data-id="bob"><div class="dot" style="background:#ffd6a5"></div><div>Ben (Friend)</div></div>
+        </div>
+
+        <div style="margin-top:auto;display:flex;gap:8px">
+          <button id="logoutBtn" class="btn secondary small">Logout</button>
+          <button id="clearBtn" class="btn small">Clear encrypted data</button>
+        </div>
+      </div>
+
+      <div class="chat-area">
+        <div class="chat-header">
+          <div>
+            <div class="name">Alex ↔ Ben</div>
+            <div id="status" class="meta">Encrypted — unlocked</div>
+          </div>
+          <div>
+            <button id="toggleSender" class="btn secondary small">Sender: Alex</button>
+          </div>
+        </div>
+
+        <div id="messages" class="messages" aria-live="polite"></div>
+
+        <div class="composer">
+          <input id="msgInput" type="text" placeholder="Type your message and press Send..." aria-label="Message input" autocomplete="off" />
+          <button id="sendBtn" class="btn">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password overlay: only thing visible before unlock -->
+  <div id="overlay" class="overlay" role="dialog" aria-modal="true">
+    <div class="pwcard" role="document">
+      <h2>Enter site password</h2>
+      <p>Access to the encrypted chatbox is password protected.</p>
+      <input id="pwInput" type="password" placeholder="Password" aria-label="Site password" autocomplete="current-password" />
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button id="pwSubmit" class="btn">Open</button>
+        <button id="pwCancel" class="btn secondary">Cancel</button>
+      </div>
+      <p class="note">All messages are encrypted client-side with AES-GCM. Password is not stored. Auto-logout after inactivity enabled.</p>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Configuration (fixed password) ----------
+    // PASSWORD (plaintext): Poirot007
+    // Salt (fixed for this static demo) - ideally unique per user; kept here so same password derives same key.
+    const PASSWORD = 'Poirot007';
+    const PBKDF2_SALT_HEX = 'a1b2c3d4e5f60718293a4b5c6d7e8f90';
+    const PBKDF2_ITERATIONS = 150000; // reasonable cost for browsers
+    const AUTO_LOGOUT_MS = 5 * 60 * 1000; // 5 minutes
+
+    const STORAGE_KEY = 'encrypted_chat_v1';
+
+    // ---------- Helpers: conversions ----------
+    function hexToBuffer(hex){
+      if(hex.length % 2 !== 0) hex = '0' + hex;
+      const bytes = new Uint8Array(hex.length/2);
+      for(let i=0;i<bytes.length;i++) bytes[i]=parseInt(hex.substr(i*2,2),16);
+      return bytes.buffer;
+    }
+    function bufferToHex(buffer){
+      const bytes = new Uint8Array(buffer);
+      return Array.from(bytes).map(b=>b.toString(16).padStart(2,'0')).join('');
+    }
+    function bufToBase64(buf){
+      const bytes = new Uint8Array(buf);
+      let binary = '';
+      for(let i=0;i<bytes.byteLength;i++) binary += String.fromCharCode(bytes[i]);
+      return btoa(binary);
+    }
+    function base64ToBuf(b64){
+      const binary = atob(b64);
+      const bytes = new Uint8Array(binary.length);
+      for(let i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
+      return bytes.buffer;
+    }
+
+    // ---------- Crypto: derive key ----------
+    async function deriveKeyFromPassword(password){
+      const enc = new TextEncoder();
+      const pwKey = await crypto.subtle.importKey('raw', enc.encode(password), {name:'PBKDF2'}, false, ['deriveKey']);
+      const salt = hexToBuffer(PBKDF2_SALT_HEX);
+      const derived = await crypto.subtle.deriveKey(
+        {name:'PBKDF2', salt, iterations: PBKDF2_ITERATIONS, hash:'SHA-256'},
+        pwKey,
+        {name:'AES-GCM', length:256},
+        false,
+        ['encrypt','decrypt']
+      );
+      return derived;
+    }
+
+    // ---------- Encrypt / Decrypt ----------
+    async function encryptMessages(key, messagesObj){
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const data = new TextEncoder().encode(JSON.stringify(messagesObj));
+      const ct = await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, data);
+      return {iv: bufferToHex(iv.buffer), data: bufToBase64(ct)};
+    }
+
+    async function decryptMessages(key, stored){
+      const iv = hexToBuffer(stored.iv);
+      const ct = base64ToBuf(stored.data);
+      const plain = await crypto.subtle.decrypt({name:'AES-GCM', iv:new Uint8Array(iv)}, key, ct);
+      const txt = new TextDecoder().decode(plain);
+      return JSON.parse(txt);
+    }
+
+    // ---------- UI elements ----------
+    const overlay = document.getElementById('overlay');
+    const pwInput = document.getElementById('pwInput');
+    const pwSubmit = document.getElementById('pwSubmit');
+    const pwCancel = document.getElementById('pwCancel');
+
+    const app = document.getElementById('app');
+    const messagesEl = document.getElementById('messages');
+    const msgInput = document.getElementById('msgInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const toggleSenderBtn = document.getElementById('toggleSender');
+    const clearBtn = document.getElementById('clearBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const statusEl = document.getElementById('status');
+
+    // ---------- State ----------
+    let cryptoKey = null; // CryptoKey in memory when unlocked
+    let messages = []; // decrypted messages in memory
+    let currentSender = 'alice';
+    let logoutTimer = null;
+
+    // ---------- Rendering ----------
+    function renderMessages(){
+      messagesEl.innerHTML = '';
+      messages.forEach(m=>{
+        const div = document.createElement('div');
+        div.className = 'msg '+(m.sender==='alice'?'right':'left');
+        div.innerHTML = `<div>${escapeHtml(m.text)}</div><div class="meta">${m.sender==='alice'?'Alex':'Ben'} • ${new Date(m.ts).toLocaleString()}</div>`;
+        messagesEl.appendChild(div);
+      });
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+    function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+    // ---------- Storage ops (encrypted) ----------
+    function saveEncrypted(obj){
+      // obj is {iv, data}
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+    }
+    function clearEncrypted(){ localStorage.removeItem(STORAGE_KEY); }
+    function readEncrypted(){
+      try{ const raw = localStorage.getItem(STORAGE_KEY); return raw? JSON.parse(raw): null; }catch(e){ return null; }
+    }
+
+    // ---------- App actions ----------
+    async function tryUnlock(enteredPassword){
+      // For this fixed-password demo, verify quickly that enteredPassword === PASSWORD
+      if(enteredPassword !== PASSWORD){ throw new Error('Incorrect password'); }
+      // derive key and attempt decrypt if data exists
+      cryptoKey = await deriveKeyFromPassword(enteredPassword);
+      const stored = readEncrypted();
+      if(stored){
+        try{
+          const decrypted = await decryptMessages(cryptoKey, stored);
+          messages = Array.isArray(decrypted)?decrypted:[];
+        }catch(e){
+          cryptoKey = null; throw new Error('Failed to decrypt with provided password');
+        }
+      } else {
+        messages = []; // no data yet
+      }
+      showApp();
+      startAutoLogoutTimer();
+    }
+
+    async function saveAndEncryptMessages(){
+      if(!cryptoKey) return; // shouldn't happen
+      const enc = await encryptMessages(cryptoKey, messages);
+      saveEncrypted(enc);
+      // update status timestamp
+      statusEl.textContent = 'Encrypted — unlocked';
+    }
+
+    // ---------- UI control helpers ----------
+    function showApp(){
+      overlay.style.display = 'none';
+      app.classList.remove('hidden');
+      app.setAttribute('aria-hidden','false');
+      renderMessages();
+      pwInput.value = '';
+      msgInput.focus();
+    }
+    function hideApp(){
+      app.classList.add('hidden');
+      app.setAttribute('aria-hidden','true');
+      overlay.style.display = 'flex';
+      statusEl.textContent = 'Locked';
+    }
+
+    // ---------- Message operations ----------
+    function addMessage(sender, text){
+      if(!text || !text.trim()) return;
+      messages.push({id:Date.now()+Math.random().toString(36).slice(2),sender,text:text.trim(),ts:Date.now()});
+      renderMessages(); msgInput.value='';
+      saveAndEncryptMessages();
+    }
+
+    // ---------- Event wiring ----------
+    sendBtn.addEventListener('click', ()=>{ resetAutoLogoutTimer(); addMessage(currentSender, msgInput.value); });
+    msgInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ resetAutoLogoutTimer(); addMessage(currentSender, msgInput.value); } });
+    toggleSenderBtn.addEventListener('click', ()=>{ currentSender = currentSender==='alice'?'bob':'alice'; toggleSenderBtn.textContent = 'Sender: '+(currentSender==='alice'?'Alex':'Ben'); resetAutoLogoutTimer(); });
+    clearBtn.addEventListener('click', ()=>{ if(confirm('Clear encrypted chat data? This cannot be undone.')){ clearEncrypted(); messages=[]; renderMessages(); } resetAutoLogoutTimer(); });
+    logoutBtn.addEventListener('click', ()=>{ manualLogout(); });
+
+    pwSubmit.addEventListener('click', async ()=>{
+      try{ pwSubmit.disabled=true; pwSubmit.textContent='Opening...'; await tryUnlock(pwInput.value); }catch(err){ alert(err.message||'Incorrect password'); } finally{ pwSubmit.disabled=false; pwSubmit.textContent='Open'; }
+    });
+    pwInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') pwSubmit.click(); });
+    pwCancel.addEventListener('click', ()=>{ pwInput.value=''; pwInput.blur(); alert('Access cancelled'); });
+
+    // ---------- Auto-logout ----------
+    function startAutoLogoutTimer(){ resetAutoLogoutTimer(); }
+    function resetAutoLogoutTimer(){ if(logoutTimer) clearTimeout(logoutTimer); logoutTimer = setTimeout(()=>{ autoLogout(); }, AUTO_LOGOUT_MS); }
+    function clearAutoLogoutTimer(){ if(logoutTimer) clearTimeout(logoutTimer); logoutTimer=null; }
+
+    function manualLogout(){
+      clearAutoLogoutTimer(); cryptoKey = null; messages = []; hideApp(); // do not clear storage
+      alert('Logged out');
+    }
+    function autoLogout(){
+      cryptoKey = null; messages = []; hideApp(); alert('Session timed out due to inactivity (auto-logout).');
+    }
+
+    // ---------- On load ----------
+    (function(){
+      // Keep everything hidden until successful login
+      app.classList.add('hidden');
+      overlay.style.display = 'flex';
+      pwInput.focus();
+    })();
+
+    // clear sensitive references when page is unloaded
+    window.addEventListener('beforeunload', ()=>{ cryptoKey = null; messages = []; clearAutoLogoutTimer(); });
+
+  </script>
+</body>
+</html>
