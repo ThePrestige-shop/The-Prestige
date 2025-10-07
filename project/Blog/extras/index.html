@@ -1,175 +1,273 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Secure Chat</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f7f7f7;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-  }
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Encrypted Shared Chat (Firebase + AES-GCM)</title>
+  <style>
+    :root{--bg:#f3f6f8;--card:#ffffff;--accent:#0ea5a4;--muted:#6b7280}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:#0b1220;background:var(--bg)}
+    .center{display:flex;align-items:center;justify-content:center;height:100vh;padding:14px}
+    .app{width:min(1000px,98vw);height:min(760px,94vh);background:var(--card);box-shadow:0 10px 30px rgba(2,6,23,0.08);border-radius:12px;overflow:hidden;display:grid;grid-template-columns:320px 1fr}
+    .sidebar{background:linear-gradient(#fff,#f7fafc);padding:18px;display:flex;flex-direction:column;gap:12px;border-right:1px solid rgba(15,23,42,0.04)}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:44px;height:44px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+    .title{font-weight:700;font-size:16px}
+    .subtitle{font-size:12px;color:var(--muted)}
+    .people{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .person{padding:8px;border-radius:8px;display:flex;gap:10px;align-items:center;cursor:pointer}
+    .person.selected{background:rgba(14,165,164,0.08)}
+    .chat-area{display:flex;flex-direction:column}
+    .chat-header{padding:16px;border-bottom:1px solid rgba(2,6,23,0.04);display:flex;justify-content:space-between;align-items:center}
+    .messages{
+      flex:1;
+      padding:18px;
+      overflow-y:auto;
+      overflow-x:hidden;
+      scroll-behavior:smooth;
+      background:linear-gradient(#fbfdff,#ffffff);
+    }
+    .messages::-webkit-scrollbar{width:8px}
+    .messages::-webkit-scrollbar-thumb{background-color:rgba(14,165,164,0.4);border-radius:6px}
+    .messages::-webkit-scrollbar-thumb:hover{background-color:rgba(14,165,164,0.6)}
+    .msg{max-width:70%;margin-bottom:12px;padding:10px 12px;border-radius:12px;line-height:1.3}
+    .msg.left{background:#f1f5f9;border-top-left-radius:4px}
+    .msg.right{background:linear-gradient(90deg,var(--accent),#38bdf8);color:white;margin-left:auto;border-top-right-radius:4px}
+    .meta{font-size:11px;color:var(--muted);margin-top:6px}
+    .composer{display:flex;padding:12px;border-top:1px solid rgba(2,6,23,0.04);gap:8px}
+    .composer input[type="text"]{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(2,6,23,0.06);outline:none}
+    .btn{padding:10px 12px;border-radius:8px;border:none;background:var(--accent);color:white;cursor:pointer}
+    .btn.secondary{background:#eef2f2;color:#034d4c}
+    .small{font-size:13px}
+    .overlay{position:fixed;inset:0;background:rgba(2,6,23,0.65);display:flex;align-items:center;justify-content:center;z-index:40}
+    .pwcard{background:var(--card);padding:22px;border-radius:10px;width:420px;box-shadow:0 12px 40px rgba(2,6,23,0.2);text-align:center}
+    .pwcard input{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(2,6,23,0.06);margin-bottom:12px}
+    .hidden{display:none !important}
+    @media (max-width:780px){.app{grid-template-columns:1fr}.sidebar{display:none}}
+  </style>
 
-  #login-box {
-    background: #fff;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
-
-  #chat-box {
-    display: none;
-    flex-direction: column;
-    width: 400px;
-    height: 500px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
-
-  #messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 15px;
-  }
-
-  .msg {
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 8px;
-    max-width: 70%;
-  }
-
-  .alex {
-    background: #e0f7fa;
-    align-self: flex-start;
-  }
-
-  .ben {
-    background: #c8e6c9;
-    align-self: flex-end;
-  }
-
-  #input-area {
-    display: flex;
-    border-top: 1px solid #ddd;
-  }
-
-  #msg-input {
-    flex: 1;
-    border: none;
-    padding: 10px;
-    border-radius: 0 0 0 10px;
-    outline: none;
-  }
-
-  #send-btn {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 0 20px;
-    border-radius: 0 0 10px 0;
-    cursor: pointer;
-  }
-</style>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
+  <div class="center">
+    <div id="app" class="app" aria-hidden="true">
+      <div class="sidebar">
+        <div class="brand">
+          <div class="logo">CH</div>
+          <div>
+            <div class="title">Encrypted ChatHub</div>
+            <div class="subtitle">Client-side encrypted — shared via Firebase</div>
+          </div>
+        </div>
 
-<div id="login-box">
-  <h2>Enter Password</h2>
-  <input type="password" id="password" placeholder="Password" />
-  <button id="login-btn">Login</button>
-</div>
+        <div class="people">
+          <div id="p1" class="person selected" data-id="alice"><div style="width:10px;height:10px;border-radius:50%;background:#94f9f6"></div><div>Joseph (You)</div></div>
+          <div id="p2" class="person" data-id="bob"><div style="width:10px;height:10px;border-radius:50%;background:#ffd6a5"></div><div>Kezia (Friend)</div></div>
+        </div>
 
-<div id="chat-box">
-  <div id="messages"></div>
-  <div id="input-area">
-    <input type="text" id="msg-input" placeholder="Type a message..." />
-    <button id="send-btn">Send</button>
+        <div style="margin-top:auto;display:flex;gap:8px">
+          <button id="logoutBtn" class="btn secondary small">Logout</button>
+          <button id="clearBtn" class="btn small">Delete all messages</button>
+        </div>
+      </div>
+
+      <div class="chat-area">
+        <div class="chat-header">
+          <div>
+            <div class="name" style="font-weight:700">Joseph ↔ Kezia</div>
+            <div id="status" class="meta">Locked</div>
+          </div>
+          <div>
+            <button id="toggleSender" class="btn secondary small">Sender: Joseph</button>
+          </div>
+        </div>
+
+        <div id="messages" class="messages" aria-live="polite"></div>
+
+        <div class="composer">
+          <input id="msgInput" type="text" placeholder="Type your message..." aria-label="Message input" autocomplete="off"/>
+          <button id="sendBtn" class="btn">Send</button>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 
-<script type="module">
-  // Import Firebase
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  <div id="overlay" class="overlay" role="dialog" aria-modal="true">
+    <div class="pwcard" role="document">
+      <h2>Enter site password</h2>
+      <p>Messages are encrypted locally before upload.</p>
+      <input id="pwInput" type="password" placeholder="Password" aria-label="Site password" autocomplete="current-password"/>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button id="pwSubmit" class="btn">Open</button>
+        <button id="pwCancel" class="btn secondary">Cancel</button>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-top:12px">Auto-logout after 10 minutes</p>
+    </div>
+  </div>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBS8ypHflR4R0qnVvymjFNYpjyQOjAwzXw",
-    authDomain: "encrypted-chat-5c3a2.firebaseapp.com",
-    databaseURL: "https://encrypted-chat-5c3a2-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "encrypted-chat-5c3a2",
-    storageBucket: "encrypted-chat-5c3a2.firebasestorage.app",
-    messagingSenderId: "944733984035",
-    appId: "1:944733984035:web:717022c9efc6a49a68e896",
-    measurementId: "G-HSLTB159JK"
-  };
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBS8ypHflR4R0qnVvymjFNYpjyQOjAwzXw",
+  authDomain: "encrypted-chat-5c3a2.firebaseapp.com",
+  databaseURL: "https://encrypted-chat-5c3a2-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "encrypted-chat-5c3a2",
+  storageBucket: "encrypted-chat-5c3a2.firebasestorage.app",
+  messagingSenderId: "944733984035",
+  appId: "1:944733984035:web:717022c9efc6a49a68e896",
+  measurementId: "G-HSLTB159JK"
+};
+const FIXED_PASSWORD = "Poirot@007";
+const PBKDF2_SALT_HEX = "a1b2c3d4e5f60718293a4b5c6d7e8f90";
+const PBKDF2_ITERATIONS = 150000;
+const AUTO_LOGOUT_MS = 10 * 60 * 1000;
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  const messagesRef = ref(db, "messages");
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const chatRef = db.ref("encrypted_chat");
 
-  const PASSWORD = "Poirot007";
-  let currentUser = "Alex";
+const overlay = document.getElementById('overlay');
+const pwInput = document.getElementById('pwInput');
+const pwSubmit = document.getElementById('pwSubmit');
+const app = document.getElementById('app');
+const messagesEl = document.getElementById('messages');
+const msgInput = document.getElementById('msgInput');
+const sendBtn = document.getElementById('sendBtn');
+const toggleSenderBtn = document.getElementById('toggleSender');
+const logoutBtn = document.getElementById('logoutBtn');
+const clearBtn = document.getElementById('clearBtn');
+const statusEl = document.getElementById('status');
 
-  const loginBox = document.getElementById("login-box");
-  const chatBox = document.getElementById("chat-box");
-  const passwordInput = document.getElementById("password");
-  const loginBtn = document.getElementById("login-btn");
-  const msgInput = document.getElementById("msg-input");
-  const sendBtn = document.getElementById("send-btn");
-  const messagesDiv = document.getElementById("messages");
+let cryptoKey = null;
+let messages = [];
+let unlocked = false;
+let currentSender = 'alice';
+let logoutTimer = null;
+let listenAttached = false;
 
-  // Auto logout after 10 minutes
-  function startAutoLogout() {
-    setTimeout(() => {
-      alert("Session expired. Please log in again.");
-      location.reload();
-    }, 10 * 60 * 1000);
-  }
+function hexToBuffer(hex){const bytes=new Uint8Array(hex.length/2);for(let i=0;i<bytes.length;i++)bytes[i]=parseInt(hex.substr(i*2,2),16);return bytes.buffer;}
+function bufferToHex(buffer){const bytes=new Uint8Array(buffer);return Array.from(bytes).map(b=>b.toString(16).padStart(2,'0')).join('');}
+function bufToBase64(buf){const bytes=new Uint8Array(buf);let binary='';for(let i=0;i<bytes.byteLength;i++)binary+=String.fromCharCode(bytes[i]);return btoa(binary);}
+function base64ToBuf(b64){const binary=atob(b64);const bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);return bytes.buffer;}
 
-  // Login
-  loginBtn.addEventListener("click", () => {
-    if (passwordInput.value === PASSWORD) {
-      loginBox.style.display = "none";
-      chatBox.style.display = "flex";
-      startAutoLogout();
-    } else {
-      alert("Incorrect password.");
+async function deriveKeyFromPassword(password){
+  const enc=new TextEncoder();
+  const baseKey=await crypto.subtle.importKey('raw',enc.encode(password),{name:'PBKDF2'},false,['deriveKey']);
+  const salt=hexToBuffer(PBKDF2_SALT_HEX);
+  return await crypto.subtle.deriveKey(
+    {name:'PBKDF2',salt,iterations:PBKDF2_ITERATIONS,hash:'SHA-256'},
+    baseKey,
+    {name:'AES-GCM',length:256},
+    false,
+    ['encrypt','decrypt']
+  );
+}
+async function encryptMessage(key,plainObj){
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const data=new TextEncoder().encode(JSON.stringify(plainObj));
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,data);
+  return {iv:bufferToHex(iv.buffer),data:bufToBase64(ct)};
+}
+async function decryptMessage(key,stored){
+  const ivBuf=hexToBuffer(stored.iv);
+  const ct=base64ToBuf(stored.data);
+  const plainBuf=await crypto.subtle.decrypt({name:'AES-GCM',iv:new Uint8Array(ivBuf)},key,ct);
+  return JSON.parse(new TextDecoder().decode(plainBuf));
+}
+function renderMessages(){
+  messagesEl.innerHTML='';
+  messages.forEach(m=>{
+    const div=document.createElement('div');
+    div.className='msg '+(m.sender==='alice'?'right':'left');
+    div.innerHTML=`<div>${escapeHtml(m.text)}</div><div class="meta">${m.sender==='alice'?'Joseph':'Kezia'} • ${new Date(m.ts).toLocaleString()}</div>`;
+    messagesEl.appendChild(div);
+  });
+  messagesEl.scrollTop=messagesEl.scrollHeight;
+}
+function escapeHtml(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');}
+async function pushEncryptedToFirebase(obj){await chatRef.push(obj);}
+async function fetchAllEncryptedOnce(){const s=await chatRef.orderByChild('ts').once('value');const a=[];s.forEach(c=>a.push(c.val()));return a;}
+
+async function tryUnlock(enteredPassword){
+  if(enteredPassword!==FIXED_PASSWORD)throw new Error('Incorrect password');
+  cryptoKey=await deriveKeyFromPassword(enteredPassword);
+  messages=[];
+  let uniqueIds=new Set();
+  try{
+    const stored=await fetchAllEncryptedOnce();
+    for(const s of stored){
+      try{
+        const plain=await decryptMessage(cryptoKey,s);
+        if(!uniqueIds.has(plain.id)){uniqueIds.add(plain.id);messages.push(plain);}
+      }catch(e){console.warn('Decrypt fail',e);}
     }
+    messages.sort((a,b)=>a.ts-b.ts);
+  }catch(e){console.warn('Load fail',e);}
+  unlocked=true;
+  showApp();
+  attachRealtimeListener(uniqueIds);
+  startAutoLogoutTimer();
+}
+function showApp(){overlay.style.display='none';app.setAttribute('aria-hidden','false');statusEl.textContent='Unlocked';renderMessages();msgInput.focus();}
+function hideApp(){overlay.style.display='flex';app.setAttribute('aria-hidden','true');statusEl.textContent='Locked';}
+
+function attachRealtimeListener(existingIds=new Set()){
+  if(listenAttached)return;
+  listenAttached=true;
+  chatRef.orderByChild('ts').limitToLast(200).on('child_added',async snap=>{
+    const data=snap.val();
+    if(!unlocked||!cryptoKey)return;
+    try{
+      const plain=await decryptMessage(cryptoKey,data);
+      if(!existingIds.has(plain.id)){
+        existingIds.add(plain.id);
+        messages.push(plain);
+        messages.sort((a,b)=>a.ts-b.ts);
+        renderMessages();
+      }
+    }catch(e){console.warn('Decrypt error',e);}
   });
+}
 
-  // Alternate between Alex and Ben
-  function toggleUser() {
-    currentUser = currentUser === "Alex" ? "Ben" : "Alex";
-  }
+async function sendMessage(text){
+  if(!unlocked||!cryptoKey){alert('Unlock first');return;}
+  const item={id:Date.now().toString(36)+Math.random().toString(36).slice(2),sender:currentSender,text,ts:Date.now()};
+  const cipher=await encryptMessage(cryptoKey,item);
+  await pushEncryptedToFirebase({iv:cipher.iv,data:cipher.data,ts:item.ts,sender:item.sender});
+}
+async function deleteAllMessages(){
+  if(!confirm('Delete all messages?'))return;
+  await chatRef.remove();
+  messages=[];
+  renderMessages();
+  alert('All messages deleted.');
+}
+function startAutoLogoutTimer(){resetAutoLogoutTimer();}
+function resetAutoLogoutTimer(){if(logoutTimer)clearTimeout(logoutTimer);logoutTimer=setTimeout(()=>autoLogout(),AUTO_LOGOUT_MS);}
+function clearAutoLogoutTimer(){if(logoutTimer)clearTimeout(logoutTimer);logoutTimer=null;}
+function autoLogout(){cryptoKey=null;unlocked=false;messages=[];hideApp();alert('Auto-logout after inactivity.');}
+function manualLogout(){clearAutoLogoutTimer();cryptoKey=null;unlocked=false;messages=[];hideApp();alert('Logged out.');}
 
-  // Send message
-  sendBtn.addEventListener("click", () => {
-    const text = msgInput.value.trim();
-    if (!text) return;
-    push(messagesRef, { user: currentUser, text });
-    msgInput.value = "";
-    toggleUser();
-  });
+pwSubmit.addEventListener('click',async()=>{
+  const val=pwInput.value||'';pwSubmit.disabled=true;pwSubmit.textContent='Opening...';
+  try{await tryUnlock(val);}catch(e){alert(e.message||'Incorrect password');}
+  finally{pwInput.value='';pwSubmit.disabled=false;pwSubmit.textContent='Open';}
+});
+pwInput.addEventListener('keydown',e=>{if(e.key==='Enter')pwSubmit.click();});
+sendBtn.addEventListener('click',async()=>{
+  const txt=msgInput.value.trim();
+  if(!txt)return;
+  resetAutoLogoutTimer();
+  try{await sendMessage(txt);msgInput.value='';}catch(e){alert('Failed to send');}
+});
+msgInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();sendBtn.click();}});
+toggleSenderBtn.addEventListener('click',()=>{currentSender=currentSender==='alice'?'bob':'alice';toggleSenderBtn.textContent='Sender: '+(currentSender==='alice'?'Joseph':'Kezia');resetAutoLogoutTimer();});
+logoutBtn.addEventListener('click',manualLogout);
+clearBtn.addEventListener('click',async()=>{resetAutoLogoutTimer();await deleteAllMessages();});
+document.addEventListener('mousemove',()=>{if(unlocked)resetAutoLogoutTimer();});
+document.addEventListener('keydown',()=>{if(unlocked)resetAutoLogoutTimer();});
 
-  // Display messages
-  onChildAdded(messagesRef, (snapshot) => {
-    const msg = snapshot.val();
-    const div = document.createElement("div");
-    div.classList.add("msg", msg.user.toLowerCase());
-    div.textContent = `${msg.user}: ${msg.text}`;
-    messagesDiv.appendChild(div);
-
-    // Auto-scroll to bottom
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-  });
+(function init(){app.setAttribute('aria-hidden','true');overlay.style.display='flex';statusEl.textContent='Locked';})();
 </script>
 </body>
 </html>
