@@ -1,87 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secure Chat - Ben & Alex</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Secure Chat</title>
 <style>
   body {
     font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    color: #000;
+    background-color: #f7f7f7;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     height: 100vh;
     margin: 0;
   }
-  #loginScreen, #chatContainer {
-    background-color: #fff;
+
+  #login-box {
+    background: #fff;
     padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-    width: 360px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
-  #chatContainer {
+
+  #chat-box {
     display: none;
     flex-direction: column;
-    height: 70vh;
+    width: 400px;
+    height: 500px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
-  #chatBox {
+
+  #messages {
     flex: 1;
     overflow-y: auto;
-    border: 1px solid #ddd;
+    padding: 15px;
+  }
+
+  .msg {
+    margin: 10px 0;
     padding: 10px;
-    background-color: #fafafa;
     border-radius: 8px;
+    max-width: 70%;
   }
-  .msg { margin: 6px 0; }
-  .msg b { color: #1976d2; }
-  input, button {
+
+  .alex {
+    background: #e0f7fa;
+    align-self: flex-start;
+  }
+
+  .ben {
+    background: #c8e6c9;
+    align-self: flex-end;
+  }
+
+  #input-area {
+    display: flex;
+    border-top: 1px solid #ddd;
+  }
+
+  #msg-input {
+    flex: 1;
+    border: none;
     padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+    border-radius: 0 0 0 10px;
+    outline: none;
   }
-  input {
-    width: calc(100% - 80px);
-    margin-right: 10px;
-  }
-  button {
-    background-color: #1976d2;
+
+  #send-btn {
+    background: #007bff;
     color: white;
     border: none;
+    padding: 0 20px;
+    border-radius: 0 0 10px 0;
     cursor: pointer;
-  }
-  #logoutBtn {
-    margin-top: 10px;
-    background-color: #f44336;
   }
 </style>
 </head>
 <body>
 
-<div id="loginScreen">
-  <h2>🔒 Enter Password</h2>
-  <input type="password" id="passwordInput" placeholder="Enter password">
-  <button id="loginBtn">Login</button>
-  <p id="errorMsg" style="color:red;"></p>
+<div id="login-box">
+  <h2>Enter Password</h2>
+  <input type="password" id="password" placeholder="Password" />
+  <button id="login-btn">Login</button>
 </div>
 
-<div id="chatContainer">
-  <h2>💬 Chat Between Ben & Alex</h2>
-  <div id="chatBox"></div>
-  <div style="display: flex; margin-top: 10px;">
-    <input type="text" id="messageInput" placeholder="Type message...">
-    <button id="sendButton">Send</button>
+<div id="chat-box">
+  <div id="messages"></div>
+  <div id="input-area">
+    <input type="text" id="msg-input" placeholder="Type a message..." />
+    <button id="send-btn">Send</button>
   </div>
-  <button id="logoutBtn">Logout</button>
 </div>
 
-<script>
-  // --- Firebase Configuration ---
+<script type="module">
+  // Import Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
   const firebaseConfig = {
     apiKey: "AIzaSyBS8ypHflR4R0qnVvymjFNYpjyQOjAwzXw",
     authDomain: "encrypted-chat-5c3a2.firebaseapp.com",
@@ -92,36 +110,66 @@
     appId: "1:944733984035:web:717022c9efc6a49a68e896",
     measurementId: "G-HSLTB159JK"
   };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
 
-  // --- Password and Key ---
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const messagesRef = ref(db, "messages");
+
   const PASSWORD = "Poirot007";
-  const SECRET_KEY = "Poirot007_Key";
+  let currentUser = "Alex";
 
-  const loginScreen = document.getElementById("loginScreen");
-  const chatContainer = document.getElementById("chatContainer");
-  const passwordInput = document.getElementById("passwordInput");
-  const errorMsg = document.getElementById("errorMsg");
-  const chatBox = document.getElementById("chatBox");
+  const loginBox = document.getElementById("login-box");
+  const chatBox = document.getElementById("chat-box");
+  const passwordInput = document.getElementById("password");
+  const loginBtn = document.getElementById("login-btn");
+  const msgInput = document.getElementById("msg-input");
+  const sendBtn = document.getElementById("send-btn");
+  const messagesDiv = document.getElementById("messages");
 
-  let currentUser = null;
+  // Auto logout after 10 minutes
+  function startAutoLogout() {
+    setTimeout(() => {
+      alert("Session expired. Please log in again.");
+      location.reload();
+    }, 10 * 60 * 1000);
+  }
 
-  // --- Login ---
-  document.getElementById("loginBtn").addEventListener("click", () => {
-    const entered = passwordInput.value.trim();
-    if (entered === PASSWORD) {
-      loginScreen.style.display = "none";
-      chatContainer.style.display = "flex";
+  // Login
+  loginBtn.addEventListener("click", () => {
+    if (passwordInput.value === PASSWORD) {
+      loginBox.style.display = "none";
+      chatBox.style.display = "flex";
       startAutoLogout();
-      chooseUser();
-      loadMessages();
     } else {
-      errorMsg.textContent = "❌ Incorrect password!";
+      alert("Incorrect password.");
     }
   });
 
-  // --- Choose Between Ben & Alex ---
-  function chooseUser() {
-    const choice = prompt("Who are you? Type 'Ben' or 'Alex':");
-    if (choi
+  // Alternate between Alex and Ben
+  function toggleUser() {
+    currentUser = currentUser === "Alex" ? "Ben" : "Alex";
+  }
+
+  // Send message
+  sendBtn.addEventListener("click", () => {
+    const text = msgInput.value.trim();
+    if (!text) return;
+    push(messagesRef, { user: currentUser, text });
+    msgInput.value = "";
+    toggleUser();
+  });
+
+  // Display messages
+  onChildAdded(messagesRef, (snapshot) => {
+    const msg = snapshot.val();
+    const div = document.createElement("div");
+    div.classList.add("msg", msg.user.toLowerCase());
+    div.textContent = `${msg.user}: ${msg.text}`;
+    messagesDiv.appendChild(div);
+
+    // Auto-scroll to bottom
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  });
+</script>
+</body>
+</html>
