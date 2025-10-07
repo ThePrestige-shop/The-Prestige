@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Secure Chatbox</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -77,7 +77,7 @@
   <button id="logoutBtn">Logout</button>
 </div>
 
-<script type="module">
+<script>
   // Initialize Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyBS8ypHflR4R0qnVvymjFNYpjyQOjAwzXw",
@@ -89,12 +89,12 @@
     appId: "1:944733984035:web:717022c9efc6a49a68e896",
     measurementId: "G-HSLTB159JK"
   };
-  const app = firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
   // Password and Key
-  const PASSWORD = "Poirot007";
-  const SECRET_KEY = "Poirot007_Key";
+  const PASSWORD = "Poirot@007";
+  const SECRET_KEY = "Poirot@007_Key";
 
   const loginScreen = document.getElementById("loginScreen");
   const chatContainer = document.getElementById("chatContainer");
@@ -104,13 +104,14 @@
 
   // --- Login ---
   document.getElementById("loginBtn").addEventListener("click", () => {
-    if (passwordInput.value === PASSWORD) {
+    const entered = passwordInput.value.trim();
+    if (entered === PASSWORD) {
       loginScreen.style.display = "none";
       chatContainer.style.display = "flex";
       startAutoLogout();
       loadMessages();
     } else {
-      errorMsg.textContent = "Incorrect password!";
+      errorMsg.textContent = "❌ Incorrect password!";
     }
   });
 
@@ -152,7 +153,7 @@
     const encrypted = encryptMessage(text);
     const messageRef = db.ref("messages").push();
     messageRef.set({
-      sender: "You",
+      sender: "User",
       text: encrypted,
       timestamp: Date.now()
     });
@@ -160,10 +161,10 @@
     document.getElementById("messageInput").value = "";
   });
 
-  // --- Load and display messages from Firebase ---
+  // --- Load messages ---
   function loadMessages() {
     const messagesRef = db.ref("messages");
-    messagesRef.off(); // Prevent multiple listeners
+    messagesRef.off();
     messagesRef.on("child_added", (snapshot) => {
       const data = snapshot.val();
       const msg = decryptMessage(data.text);
