@@ -110,12 +110,12 @@
 
   <script>
     // ---------- Configuration (fixed password) ----------
-    // PASSWORD (plaintext): Poirot007
+    // PASSWORD (plaintext): Poirot@007
     // Salt (fixed for this static demo) - ideally unique per user; kept here so same password derives same key.
-    const PASSWORD = 'Poirot007';
+    const PASSWORD = 'Poirot@007';
     const PBKDF2_SALT_HEX = 'a1b2c3d4e5f60718293a4b5c6d7e8f90';
     const PBKDF2_ITERATIONS = 150000; // reasonable cost for browsers
-    const AUTO_LOGOUT_MS = 5 * 60 * 1000; // 5 minutes
+    const AUTO_LOGOUT_MS = 10 * 60 * 1000; // 10 minutes
 
     const STORAGE_KEY = 'encrypted_chat_v1';
 
@@ -167,9 +167,9 @@
     }
 
     async function decryptMessages(key, stored){
-      const iv = hexToBuffer(stored.iv);
+      const ivBuf = hexToBuffer(stored.iv);
       const ct = base64ToBuf(stored.data);
-      const plain = await crypto.subtle.decrypt({name:'AES-GCM', iv:new Uint8Array(iv)}, key, ct);
+      const plain = await crypto.subtle.decrypt({name:'AES-GCM', iv:new Uint8Array(ivBuf)}, key, ct);
       const txt = new TextDecoder().decode(plain);
       return JSON.parse(txt);
     }
@@ -194,6 +194,7 @@
     let messages = []; // decrypted messages in memory
     let currentSender = 'alice';
     let logoutTimer = null;
+    let saveInProgress = false;
 
     // ---------- Rendering ----------
     function renderMessages(){
@@ -210,7 +211,6 @@
 
     // ---------- Storage ops (encrypted) ----------
     function saveEncrypted(obj){
-      // obj is {iv, data}
       localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
     }
     function clearEncrypted(){ localStorage.removeItem(STORAGE_KEY); }
@@ -230,7 +230,9 @@
           const decrypted = await decryptMessages(cryptoKey, stored);
           messages = Array.isArray(decrypted)?decrypted:[];
         }catch(e){
-          cryptoKey = null; throw new Error('Failed to decrypt with provided password');
+          // If decryption fails, clear storage (integrity fail) and start fresh
+          console.warn('Failed decrypt - clearing corrupted/old storage', e);
+          clearEncrypted(); messages = [];
         }
       } else {
         messages = []; // no data yet
@@ -240,11 +242,16 @@
     }
 
     async function saveAndEncryptMessages(){
-      if(!cryptoKey) return; // shouldn't happen
-      const enc = await encryptMessages(cryptoKey, messages);
-      saveEncrypted(enc);
-      // update status timestamp
-      statusEl.textContent = 'Encrypted — unlocked';
+      if(!cryptoKey) return;
+      // prevent concurrent saves
+      while(saveInProgress) await new Promise(r=>setTimeout(r,50));
+      saveInProgress = true;
+      try{
+        const enc = await encryptMessages(cryptoKey, messages);
+        saveEncrypted(enc);
+        statusEl.textContent = 'Encrypted — unlocked';
+      }catch(e){ console.error('Failed to encrypt/save', e); }
+      saveInProgress = false;
     }
 
     // ---------- UI control helpers ----------
@@ -264,18 +271,18 @@
     }
 
     // ---------- Message operations ----------
-    function addMessage(sender, text){
+    async function addMessage(sender, text){
       if(!text || !text.trim()) return;
       messages.push({id:Date.now()+Math.random().toString(36).slice(2),sender,text:text.trim(),ts:Date.now()});
       renderMessages(); msgInput.value='';
-      saveAndEncryptMessages();
+      await saveAndEncryptMessages();
     }
 
     // ---------- Event wiring ----------
-    sendBtn.addEventListener('click', ()=>{ resetAutoLogoutTimer(); addMessage(currentSender, msgInput.value); });
-    msgInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ resetAutoLogoutTimer(); addMessage(currentSender, msgInput.value); } });
+    sendBtn.addEventListener('click', async ()=>{ resetAutoLogoutTimer(); await addMessage(currentSender, msgInput.value); });
+    msgInput.addEventListener('keydown', async (e)=>{ if(e.key==='Enter'){ resetAutoLogoutTimer(); await addMessage(currentSender, msgInput.value); } });
     toggleSenderBtn.addEventListener('click', ()=>{ currentSender = currentSender==='alice'?'bob':'alice'; toggleSenderBtn.textContent = 'Sender: '+(currentSender==='alice'?'Alex':'Ben'); resetAutoLogoutTimer(); });
-    clearBtn.addEventListener('click', ()=>{ if(confirm('Clear encrypted chat data? This cannot be undone.')){ clearEncrypted(); messages=[]; renderMessages(); } resetAutoLogoutTimer(); });
+    clearBtn.addEventListener('click', async ()=>{ if(confirm('Clear encrypted chat data? This cannot be undone.')){ clearEncrypted(); messages=[]; renderMessages(); } resetAutoLogoutTimer(); });
     logoutBtn.addEventListener('click', ()=>{ manualLogout(); });
 
     pwSubmit.addEventListener('click', async ()=>{
