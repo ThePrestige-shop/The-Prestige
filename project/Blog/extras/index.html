@@ -1,429 +1,184 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Encrypted Shared Chat (Firebase + AES-GCM)</title>
-  <style>
-    :root{--bg:#f3f6f8;--card:#ffffff;--accent:#0ea5a4;--muted:#6b7280}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:#0b1220;background:var(--bg)}
-    .center{display:flex;align-items:center;justify-content:center;height:100vh;padding:14px}
-    .app{width:min(1000px,98vw);height:min(760px,94vh);background:var(--card);box-shadow:0 10px 30px rgba(2,6,23,0.08);border-radius:12px;overflow:hidden;display:grid;grid-template-columns:320px 1fr}
-    .sidebar{background:linear-gradient(#fff,#f7fafc);padding:18px;display:flex;flex-direction:column;gap:12px;border-right:1px solid rgba(15,23,42,0.04)}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:44px;height:44px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
-    .title{font-weight:700;font-size:16px}.subtitle{font-size:12px;color:var(--muted)}
-    .people{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-    .person{padding:8px;border-radius:8px;display:flex;gap:10px;align-items:center;cursor:pointer}
-    .person.selected{background:rgba(14,165,164,0.08)}
-    .chat-area{display:flex;flex-direction:column}
-    .chat-header{padding:16px;border-bottom:1px solid rgba(2,6,23,0.04);display:flex;justify-content:space-between;align-items:center}
-    .messages{flex:1;padding:18px;overflow:auto;background:linear-gradient(#fbfdff,#ffffff)}
-    .msg{max-width:70%;margin-bottom:12px;padding:10px 12px;border-radius:12px;line-height:1.3}
-    .msg.left{background:#f1f5f9;border-top-left-radius:4px}
-    .msg.right{background:linear-gradient(90deg,var(--accent),#38bdf8);color:white;margin-left:auto;border-top-right-radius:4px}
-    .meta{font-size:11px;color:var(--muted);margin-top:6px}
-    .composer{display:flex;padding:12px;border-top:1px solid rgba(2,6,23,0.04);gap:8px}
-    .composer input[type="text"]{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(2,6,23,0.06);outline:none}
-    .btn{padding:10px 12px;border-radius:8px;border:none;background:var(--accent);color:white;cursor:pointer}
-    .btn.secondary{background:#eef2f2;color:#034d4c}
-    .small{font-size:13px}
-    .overlay{position:fixed;inset:0;background:rgba(2,6,23,0.65);display:flex;align-items:center;justify-content:center;z-index:40}
-    .pwcard{background:var(--card);padding:22px;border-radius:10px;width:420px;box-shadow:0 12px 40px rgba(2,6,23,0.2);text-align:center}
-    .pwcard input{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(2,6,23,0.06);margin-bottom:12px}
-    .hidden{display:none !important}
-    @media (max-width:780px){.app{grid-template-columns:1fr}.sidebar{display:none}}
-  </style>
-
-  <!-- Firebase Realtime Database SDK (compat) -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure Chatbox</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js"></script>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  #loginScreen, #chatContainer {
+    background-color: #1e1e1e;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+    width: 350px;
+  }
+  #chatContainer { display: none; flex-direction: column; height: 70vh; }
+  #chatBox {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid #333;
+    padding: 10px;
+    background-color: #000;
+    border-radius: 8px;
+  }
+  .msg { margin: 6px 0; }
+  .msg b { color: #03a9f4; }
+  input, button {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+  }
+  input {
+    width: calc(100% - 80px);
+    margin-right: 10px;
+    background-color: #2c2c2c;
+    color: white;
+  }
+  button {
+    background-color: #03a9f4;
+    color: white;
+    cursor: pointer;
+  }
+  #logoutBtn {
+    margin-top: 10px;
+    background-color: #f44336;
+  }
+</style>
 </head>
 <body>
-  <div class="center">
-    <div id="app" class="app" aria-hidden="true">
-      <div class="sidebar">
-        <div class="brand">
-          <div class="logo">CH</div>
-          <div>
-            <div class="title">Encrypted ChatHub</div>
-            <div class="subtitle">Client-side encrypted — shared via Firebase</div>
-          </div>
-        </div>
 
-        <div class="people">
-          <div id="p1" class="person selected" data-id="alice"><div style="width:10px;height:10px;border-radius:50%;background:#94f9f6"></div><div>Alex (You)</div></div>
-          <div id="p2" class="person" data-id="bob"><div style="width:10px;height:10px;border-radius:50%;background:#ffd6a5"></div><div>Ben (Friend)</div></div>
-        </div>
+<div id="loginScreen">
+  <h2>🔒 Enter Password</h2>
+  <input type="password" id="passwordInput" placeholder="Enter password">
+  <button id="loginBtn">Login</button>
+  <p id="errorMsg" style="color:red;"></p>
+</div>
 
-        <div style="margin-top:auto;display:flex;gap:8px">
-          <button id="logoutBtn" class="btn secondary small">Logout</button>
-          <button id="clearBtn" class="btn small">Delete all messages</button>
-        </div>
-      </div>
-
-      <div class="chat-area">
-        <div class="chat-header">
-          <div>
-            <div class="name" style="font-weight:700">Alex ↔ Ben</div>
-            <div id="status" class="meta">Locked</div>
-          </div>
-          <div>
-            <button id="toggleSender" class="btn secondary small">Sender: Alex</button>
-          </div>
-        </div>
-
-        <div id="messages" class="messages" aria-live="polite"></div>
-
-        <div class="composer">
-          <input id="msgInput" type="text" placeholder="Type your message and press Send..." aria-label="Message input" autocomplete="off" />
-          <button id="sendBtn" class="btn">Send</button>
-        </div>
-      </div>
-    </div>
+<div id="chatContainer">
+  <h2>💬 Secure Chat</h2>
+  <div id="chatBox"></div>
+  <div style="display: flex; margin-top: 10px;">
+    <input type="text" id="messageInput" placeholder="Type message...">
+    <button id="sendButton">Send</button>
   </div>
+  <button id="logoutBtn">Logout</button>
+</div>
 
-  <!-- Password overlay -->
-  <div id="overlay" class="overlay" role="dialog" aria-modal="true">
-    <div class="pwcard" role="document">
-      <h2>Enter site password</h2>
-      <p>Access to the encrypted chatbox is password protected. Messages are encrypted locally and stored in Firebase as ciphertext.</p>
-      <input id="pwInput" type="password" placeholder="Password" aria-label="Site password" autocomplete="current-password" />
-      <div style="display:flex;gap:8px;justify-content:center">
-        <button id="pwSubmit" class="btn">Open</button>
-        <button id="pwCancel" class="btn secondary">Cancel</button>
-      </div>
-      <p style="font-size:12px;color:var(--muted);margin-top:12px">Auto-logout after inactivity: 10 minutes</p>
-    </div>
-  </div>
+<script type="module">
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyBS8ypHflR4R0qnVvymjFNYpjyQOjAwzXw",
+    authDomain: "encrypted-chat-5c3a2.firebaseapp.com",
+    databaseURL: "https://encrypted-chat-5c3a2-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "encrypted-chat-5c3a2",
+    storageBucket: "encrypted-chat-5c3a2.firebasestorage.app",
+    messagingSenderId: "944733984035",
+    appId: "1:944733984035:web:717022c9efc6a49a68e896",
+    measurementId: "G-HSLTB159JK"
+  };
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-<script>
-/* ===========================
-   CONFIG & CONSTANTS
-   =========================== */
-// Firebase project config (you provided)
-const firebaseConfig = {
-  apiKey: "AIzaSyBS8ypHflR4R0qnVvymjFNYpjyQOjAwzXw",
-  authDomain: "encrypted-chat-5c3a2.firebaseapp.com",
-  databaseURL: "https://encrypted-chat-5c3a2-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "encrypted-chat-5c3a2",
-  storageBucket: "encrypted-chat-5c3a2.firebasestorage.app",
-  messagingSenderId: "944733984035",
-  appId: "1:944733984035:web:717022c9efc6a49a68e896",
-  measurementId: "G-HSLTB159JK"
-};
+  // Password and Key
+  const PASSWORD = "Poirot007";
+  const SECRET_KEY = "Poirot007_Key";
 
-// FIXED password for this demo (per your request)
-const FIXED_PASSWORD = "Poirot007";
+  const loginScreen = document.getElementById("loginScreen");
+  const chatContainer = document.getElementById("chatContainer");
+  const passwordInput = document.getElementById("passwordInput");
+  const errorMsg = document.getElementById("errorMsg");
+  const chatBox = document.getElementById("chatBox");
 
-// PBKDF2 salt (hex) — fixed so all devices derive same key from same password
-const PBKDF2_SALT_HEX = "a1b2c3d4e5f60718293a4b5c6d7e8f90";
-const PBKDF2_ITERATIONS = 150000;
-const AUTO_LOGOUT_MS = 10 * 60 * 1000; // 10 minutes
-
-/* ===========================
-   Firebase init
-   =========================== */
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const chatRef = db.ref("encrypted_chat"); // root path for messages
-
-/* ===========================
-   UI references & state
-   =========================== */
-const overlay = document.getElementById('overlay');
-const pwInput = document.getElementById('pwInput');
-const pwSubmit = document.getElementById('pwSubmit');
-const pwCancel = document.getElementById('pwCancel');
-
-const app = document.getElementById('app');
-const messagesEl = document.getElementById('messages');
-const msgInput = document.getElementById('msgInput');
-const sendBtn = document.getElementById('sendBtn');
-const toggleSenderBtn = document.getElementById('toggleSender');
-const logoutBtn = document.getElementById('logoutBtn');
-const clearBtn = document.getElementById('clearBtn');
-const statusEl = document.getElementById('status');
-
-let cryptoKey = null;      // CryptoKey held while unlocked
-let messages = [];         // decrypted messages in memory (for UI)
-let unlocked = false;
-let currentSender = 'alice';
-let logoutTimer = null;
-let listenAttached = false;
-
-/* ===========================
-   Helpers: conversions
-   =========================== */
-function hexToBuffer(hex){
-  if(hex.length % 2 !== 0) hex = '0'+hex;
-  const bytes = new Uint8Array(hex.length/2);
-  for(let i=0;i<bytes.length;i++) bytes[i]=parseInt(hex.substr(i*2,2),16);
-  return bytes.buffer;
-}
-function bufferToHex(buffer){
-  const bytes = new Uint8Array(buffer);
-  return Array.from(bytes).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-function bufToBase64(buf){
-  const bytes = new Uint8Array(buf);
-  let binary = '';
-  for(let i=0;i<bytes.byteLength;i++) binary += String.fromCharCode(bytes[i]);
-  return btoa(binary);
-}
-function base64ToBuf(b64){
-  const binary = atob(b64);
-  const bytes = new Uint8Array(binary.length);
-  for(let i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
-  return bytes.buffer;
-}
-
-/* ===========================
-   Crypto: derive key / encrypt / decrypt
-   =========================== */
-async function deriveKeyFromPassword(password){
-  const enc = new TextEncoder();
-  const baseKey = await crypto.subtle.importKey('raw', enc.encode(password), {name:'PBKDF2'}, false, ['deriveKey']);
-  const salt = hexToBuffer(PBKDF2_SALT_HEX);
-  const derivedKey = await crypto.subtle.deriveKey(
-    {name:'PBKDF2', salt, iterations: PBKDF2_ITERATIONS, hash: 'SHA-256'},
-    baseKey,
-    {name:'AES-GCM', length:256},
-    false,
-    ['encrypt','decrypt']
-  );
-  return derivedKey;
-}
-
-async function encryptMessage(key, plainObj){
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const data = new TextEncoder().encode(JSON.stringify(plainObj));
-  const ct = await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, data);
-  return { iv: bufferToHex(iv.buffer), data: bufToBase64(ct) };
-}
-
-async function decryptMessage(key, stored){
-  const ivBuf = hexToBuffer(stored.iv);
-  const ct = base64ToBuf(stored.data);
-  const plainBuf = await crypto.subtle.decrypt({name:'AES-GCM', iv: new Uint8Array(ivBuf)}, key, ct);
-  const text = new TextDecoder().decode(plainBuf);
-  return JSON.parse(text);
-}
-
-/* ===========================
-   UI render
-   =========================== */
-function renderMessages(){
-  messagesEl.innerHTML = '';
-  messages.forEach(m=>{
-    const div = document.createElement('div');
-    div.className = 'msg ' + (m.sender === 'alice' ? 'right' : 'left');
-    const safe = escapeHtml(m.text);
-    div.innerHTML = `<div>${safe}</div><div class="meta">${m.sender==='alice'?'Alex':'Ben'} • ${new Date(m.ts).toLocaleString()}</div>`;
-    messagesEl.appendChild(div);
-  });
-  messagesEl.scrollTop = messagesEl.scrollHeight;
-}
-function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-
-/* ===========================
-   Firebase operations (ciphertext)
-   =========================== */
-async function pushEncryptedToFirebase(cipherObj){
-  // cipherObj: {iv, data, ts, sender}
-  await chatRef.push(cipherObj);
-}
-
-async function fetchAllEncryptedOnce(){
-  const snapshot = await chatRef.orderByChild('ts').once('value');
-  const arr = [];
-  snapshot.forEach(child => {
-    arr.push(child.val());
-  });
-  return arr;
-}
-
-/* ===========================
-   Unlock / Lock flows
-   =========================== */
-async function tryUnlock(enteredPassword){
-  // quick fixed-password check (keeps behaviour consistent across installs)
-  if(enteredPassword !== FIXED_PASSWORD){
-    throw new Error('Incorrect password');
-  }
-  cryptoKey = await deriveKeyFromPassword(enteredPassword);
-  // Load existing ciphertexts and attempt to decrypt them (if exist)
-  try{
-    const stored = await fetchAllEncryptedOnce(); // array of cipher objects (iv,data,ts,sender)
-    messages = [];
-    for(const s of stored){
-      try{
-        const plain = await decryptMessage(cryptoKey, s);
-        messages.push(plain);
-      }catch(e){
-        // If any single decryption fails, probable corruption/wrong key for that item
-        console.warn('Decrypt fail for item; skipping', e);
-      }
-    }
-    // sort by timestamp in case
-    messages.sort((a,b)=>a.ts - b.ts);
-  }catch(err){
-    console.warn('Error loading existing messages', err);
-    messages = [];
-  }
-
-  // Attach live listener if not already (we'll only render incoming when unlocked)
-  attachRealtimeListener();
-
-  unlocked = true;
-  showApp();
-  startAutoLogoutTimer();
-}
-
-function showApp(){
-  overlay.style.display = 'none';
-  app.setAttribute('aria-hidden','false');
-  statusEl.textContent = 'Unlocked (encrypted)';
-  renderMessages();
-  msgInput.focus();
-}
-
-function hideApp(){
-  overlay.style.display = 'flex';
-  app.setAttribute('aria-hidden','true');
-  statusEl.textContent = 'Locked';
-}
-
-/* ===========================
-   Realtime listener
-   =========================== */
-function attachRealtimeListener(){
-  if(listenAttached) return;
-  // listen for new messages
-  chatRef.orderByChild('ts').limitToLast(200).on('child_added', async snapshot => {
-    const data = snapshot.val();
-    if(!unlocked || !cryptoKey) {
-      // ignore until unlocked
-      return;
-    }
-    try{
-      const plain = await decryptMessage(cryptoKey, data);
-      // avoid duplicate if we already have same ts+id in messages
-      if(!messages.find(m => m.id === plain.id && m.ts === plain.ts)){
-        messages.push(plain);
-        messages.sort((a,b)=>a.ts - b.ts);
-        renderMessages();
-      }
-    }catch(e){
-      console.warn('Realtime decrypt error', e);
+  // --- Login ---
+  document.getElementById("loginBtn").addEventListener("click", () => {
+    if (passwordInput.value === PASSWORD) {
+      loginScreen.style.display = "none";
+      chatContainer.style.display = "flex";
+      startAutoLogout();
+      loadMessages();
+    } else {
+      errorMsg.textContent = "Incorrect password!";
     }
   });
-  listenAttached = true;
-}
 
-/* ===========================
-   Message send
-   =========================== */
-async function sendMessage(text){
-  if(!unlocked || !cryptoKey) { alert('Unlock first'); return; }
-  const item = { id: Date.now().toString(36) + Math.random().toString(36).slice(2), sender: currentSender, text: text, ts: Date.now() };
-  // encrypt item
-  const cipher = await encryptMessage(cryptoKey, item); // {iv,data}
-  // store ciphertext + metadata
-  await pushEncryptedToFirebase({ iv: cipher.iv, data: cipher.data, ts: item.ts, sender: item.sender });
-  // locally update
-  messages.push(item);
-  messages.sort((a,b)=>a.ts - b.ts);
-  renderMessages();
-}
-
-/* ===========================
-   Delete all messages (dangerous) - admin action
-   =========================== */
-async function deleteAllMessages(){
-  if(!confirm('Delete ALL messages from the shared database? This cannot be undone. Proceed only if you are sure.')) return;
-  // remove entire node
-  await chatRef.remove();
-  messages = [];
-  renderMessages();
-  alert('All messages deleted from database.');
-}
-
-/* ===========================
-   Auto-logout handling
-   =========================== */
-function startAutoLogoutTimer(){ resetAutoLogoutTimer(); }
-function resetAutoLogoutTimer(){
-  if(logoutTimer) clearTimeout(logoutTimer);
-  logoutTimer = setTimeout(()=>{ autoLogout(); }, AUTO_LOGOUT_MS);
-}
-function clearAutoLogoutTimer(){ if(logoutTimer) clearTimeout(logoutTimer); logoutTimer = null; }
-
-function autoLogout(){
-  cryptoKey = null;
-  unlocked = false;
-  messages = [];
-  hideApp();
-  alert('Session timed out due to inactivity (auto-logout).');
-}
-
-/* ===========================
-   Event wiring
-   =========================== */
-pwSubmit.addEventListener('click', async ()=>{
-  const val = pwInput.value || '';
-  pwSubmit.disabled = true; pwSubmit.textContent = 'Opening...';
-  try{
-    await tryUnlock(val);
-  }catch(err){
-    alert(err.message || 'Incorrect password or decryption failed.');
-  }finally{
-    pwInput.value = '';
-    pwSubmit.disabled = false; pwSubmit.textContent = 'Open';
+  // --- Auto logout after 10 minutes ---
+  function startAutoLogout() {
+    setTimeout(() => {
+      alert("Session expired! Logging out.");
+      logout();
+    }, 10 * 60 * 1000); // 10 minutes
   }
-});
 
-pwInput.addEventListener('keydown', e => { if(e.key === 'Enter') pwSubmit.click(); });
-pwCancel.addEventListener('click', ()=>{ pwInput.value=''; pwInput.blur(); });
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+  function logout() {
+    chatContainer.style.display = "none";
+    loginScreen.style.display = "block";
+    passwordInput.value = "";
+    chatBox.innerHTML = "";
+  }
 
-sendBtn.addEventListener('click', async ()=> {
-  const txt = msgInput.value.trim();
-  if(!txt) return;
-  resetAutoLogoutTimer();
-  try{
-    await sendMessage(txt);
-    msgInput.value = '';
-  }catch(e){ console.error('Send failed', e); alert('Failed to send message'); }
-});
+  // --- Encryption / Decryption ---
+  function encryptMessage(text) {
+    return CryptoJS.AES.encrypt(text, SECRET_KEY).toString();
+  }
 
-msgInput.addEventListener('keydown', async e => { if(e.key === 'Enter') { e.preventDefault(); sendBtn.click(); } });
+  function decryptMessage(cipher) {
+    try {
+      const bytes = CryptoJS.AES.decrypt(cipher, SECRET_KEY);
+      return bytes.toString(CryptoJS.enc.Utf8);
+    } catch {
+      return "[Decryption error]";
+    }
+  }
 
-toggleSenderBtn.addEventListener('click', ()=>{ currentSender = currentSender === 'alice' ? 'bob' : 'alice'; toggleSenderBtn.textContent = 'Sender: ' + (currentSender==='alice' ? 'Alex' : 'Ben'); resetAutoLogoutTimer(); });
+  // --- Send message ---
+  document.getElementById("sendButton").addEventListener("click", () => {
+    const text = document.getElementById("messageInput").value.trim();
+    if (!text) return;
 
-logoutBtn.addEventListener('click', ()=>{ manualLogout(); });
-clearBtn.addEventListener('click', async ()=>{ resetAutoLogoutTimer(); await deleteAllMessages(); });
+    const encrypted = encryptMessage(text);
+    const messageRef = db.ref("messages").push();
+    messageRef.set({
+      sender: "You",
+      text: encrypted,
+      timestamp: Date.now()
+    });
 
-function manualLogout(){
-  clearAutoLogoutTimer();
-  cryptoKey = null;
-  unlocked = false;
-  messages = [];
-  hideApp();
-  alert('Logged out');
-}
+    document.getElementById("messageInput").value = "";
+  });
 
-/* reset auto-logout on user interactions anywhere in the app */
-document.addEventListener('mousemove', ()=>{ if(unlocked) resetAutoLogoutTimer(); });
-document.addEventListener('keydown', ()=>{ if(unlocked) resetAutoLogoutTimer(); });
+  // --- Load and display messages from Firebase ---
+  function loadMessages() {
+    const messagesRef = db.ref("messages");
+    messagesRef.off(); // Prevent multiple listeners
+    messagesRef.on("child_added", (snapshot) => {
+      const data = snapshot.val();
+      const msg = decryptMessage(data.text);
+      addMessage(data.sender, msg);
+    });
+  }
 
-/* ===========================
-   Initial UI state
-   =========================== */
-(function init(){
-  app.setAttribute('aria-hidden','true');
-  overlay.style.display = 'flex';
-  statusEl.textContent = 'Locked';
-})();
+  // --- Display message ---
+  function addMessage(sender, text) {
+    const msgDiv = document.createElement("div");
+    msgDiv.classList.add("msg");
+    msgDiv.innerHTML = `<b>${sender}:</b> ${text}`;
+    chatBox.appendChild(msgDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
 </script>
 </body>
 </html>
