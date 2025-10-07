@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secure Chatbox</title>
+<title>Secure Chat - Ben & Alex</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
 <style>
   body {
     font-family: Arial, sans-serif;
-    background-color: #121212;
-    color: white;
+    background-color: #f5f5f5;
+    color: #000;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,37 +19,40 @@
     margin: 0;
   }
   #loginScreen, #chatContainer {
-    background-color: #1e1e1e;
+    background-color: #fff;
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
-    width: 350px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    width: 360px;
   }
-  #chatContainer { display: none; flex-direction: column; height: 70vh; }
+  #chatContainer {
+    display: none;
+    flex-direction: column;
+    height: 70vh;
+  }
   #chatBox {
     flex: 1;
     overflow-y: auto;
-    border: 1px solid #333;
+    border: 1px solid #ddd;
     padding: 10px;
-    background-color: #000;
+    background-color: #fafafa;
     border-radius: 8px;
   }
   .msg { margin: 6px 0; }
-  .msg b { color: #03a9f4; }
+  .msg b { color: #1976d2; }
   input, button {
     padding: 10px;
     border-radius: 6px;
-    border: none;
+    border: 1px solid #ccc;
   }
   input {
     width: calc(100% - 80px);
     margin-right: 10px;
-    background-color: #2c2c2c;
-    color: white;
   }
   button {
-    background-color: #03a9f4;
+    background-color: #1976d2;
     color: white;
+    border: none;
     cursor: pointer;
   }
   #logoutBtn {
@@ -68,7 +71,7 @@
 </div>
 
 <div id="chatContainer">
-  <h2>💬 Secure Chat</h2>
+  <h2>💬 Chat Between Ben & Alex</h2>
   <div id="chatBox"></div>
   <div style="display: flex; margin-top: 10px;">
     <input type="text" id="messageInput" placeholder="Type message...">
@@ -78,7 +81,7 @@
 </div>
 
 <script>
-  // Initialize Firebase
+  // --- Firebase Configuration ---
   const firebaseConfig = {
     apiKey: "AIzaSyBS8ypHflR4R0qnVvymjFNYpjyQOjAwzXw",
     authDomain: "encrypted-chat-5c3a2.firebaseapp.com",
@@ -92,15 +95,17 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
-  // Password and Key
-  const PASSWORD = "Poirot@007";
-  const SECRET_KEY = "Poirot@007_Key";
+  // --- Password and Key ---
+  const PASSWORD = "Poirot007";
+  const SECRET_KEY = "Poirot007_Key";
 
   const loginScreen = document.getElementById("loginScreen");
   const chatContainer = document.getElementById("chatContainer");
   const passwordInput = document.getElementById("passwordInput");
   const errorMsg = document.getElementById("errorMsg");
   const chatBox = document.getElementById("chatBox");
+
+  let currentUser = null;
 
   // --- Login ---
   document.getElementById("loginBtn").addEventListener("click", () => {
@@ -109,77 +114,14 @@
       loginScreen.style.display = "none";
       chatContainer.style.display = "flex";
       startAutoLogout();
+      chooseUser();
       loadMessages();
     } else {
       errorMsg.textContent = "❌ Incorrect password!";
     }
   });
 
-  // --- Auto logout after 10 minutes ---
-  function startAutoLogout() {
-    setTimeout(() => {
-      alert("Session expired! Logging out.");
-      logout();
-    }, 10 * 60 * 1000); // 10 minutes
-  }
-
-  document.getElementById("logoutBtn").addEventListener("click", logout);
-  function logout() {
-    chatContainer.style.display = "none";
-    loginScreen.style.display = "block";
-    passwordInput.value = "";
-    chatBox.innerHTML = "";
-  }
-
-  // --- Encryption / Decryption ---
-  function encryptMessage(text) {
-    return CryptoJS.AES.encrypt(text, SECRET_KEY).toString();
-  }
-
-  function decryptMessage(cipher) {
-    try {
-      const bytes = CryptoJS.AES.decrypt(cipher, SECRET_KEY);
-      return bytes.toString(CryptoJS.enc.Utf8);
-    } catch {
-      return "[Decryption error]";
-    }
-  }
-
-  // --- Send message ---
-  document.getElementById("sendButton").addEventListener("click", () => {
-    const text = document.getElementById("messageInput").value.trim();
-    if (!text) return;
-
-    const encrypted = encryptMessage(text);
-    const messageRef = db.ref("messages").push();
-    messageRef.set({
-      sender: "User",
-      text: encrypted,
-      timestamp: Date.now()
-    });
-
-    document.getElementById("messageInput").value = "";
-  });
-
-  // --- Load messages ---
-  function loadMessages() {
-    const messagesRef = db.ref("messages");
-    messagesRef.off();
-    messagesRef.on("child_added", (snapshot) => {
-      const data = snapshot.val();
-      const msg = decryptMessage(data.text);
-      addMessage(data.sender, msg);
-    });
-  }
-
-  // --- Display message ---
-  function addMessage(sender, text) {
-    const msgDiv = document.createElement("div");
-    msgDiv.classList.add("msg");
-    msgDiv.innerHTML = `<b>${sender}:</b> ${text}`;
-    chatBox.appendChild(msgDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-</script>
-</body>
-</html>
+  // --- Choose Between Ben & Alex ---
+  function chooseUser() {
+    const choice = prompt("Who are you? Type 'Ben' or 'Alex':");
+    if (choi
