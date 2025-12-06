@@ -1,0 +1,309 @@
+import React, { useState, useEffect } from "react";
+import {
+  addDays,
+  differenceInDays,
+  format,
+  parseISO,
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+  isSameDay,
+  addMonths,
+} from "date-fns";
+
+export default function CycleCalendarApp() {
+  const [rawDates, setRawDates] = useState(`2024-01-26
+2024-02-29
+2024-03-30
+2024-04-25
+2024-05-25
+2024-06-19
+2024-07-17
+2024-08-11
+2024-09-09
+2024-10-07
+2024-11-04
+2024-12-06
+2025-01-01
+2025-01-27
+2025-02-25
+2025-03-24
+2025-04-28
+2025-05-31
+2025-07-02
+2025-07-30
+2025-08-28
+2025-09-25
+2025-10-21
+2025-11-18`);
+  const [periodStarts, setPeriodStarts] = useState([]);
+  const [periodLength, setPeriodLength] = useState(7);
+  const [viewMonth, setViewMonth] = useState(new Date(2025, 11, 1)); // Dec 2025
+
+  useEffect(() => {
+    parseDatesFromRaw();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function parseDatesFromRaw() {
+    const lines = rawDates
+      .split(/[\n,;]+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const parsed = lines
+      .map((l) => {
+        let d;
+        if (/^\d{4}-\d{2}-\d{2}$/.test(l)) {
+          d = parseISO(l);
+        } else {
+          d = new Date(l);
+        }
+        return isNaN(d) ? null : d;
+      })
+      .filter(Boolean)
+      .sort((a, b) => a - b);
+    setPeriodStarts(parsed);
+  }
+
+  function getCycleLengths() {
+    if (periodStarts.length < 2) return [];
+    const lens = [];
+    for (let i = 0; i < periodStarts.length - 1; i++) {
+      lens.push(differenceInDays(periodStarts[i + 1], periodStarts[i]));
+    }
+    return lens;
+  }
+
+  function averageCycle() {
+    const lens = getCycleLengths();
+    if (!lens.length) return 28;
+    return Math.round(lens.reduce((a, b) => a + b, 0) / lens.length);
+  }
+
+  function buildEvents(untilDate = new Date(2026, 11, 31)) {
+    const events = [];
+    const ps = [...periodStarts];
+
+    while (ps.length && ps[ps.length - 1] < untilDate) {
+      const last = ps[ps.length - 1];
+      const predicted = addDays(last, averageCycle() || 28);
+      if (predicted <= last) break;
+      ps.push(predicted);
+    }
+
+    for (let i = 0; i < ps.length; i++) {
+      const start = ps[i];
+      events.push({
+        type: "PERIOD",
+        start,
+        end: addDays(start, periodLength),
+      });
+
+      if (i + 1 < ps.length) {
+        const nextStart = ps[i + 1];
+        const ov = addDays(nextStart, -14);
+        const fertileStart = addDays(ov, -5);
+        const fertileEnd = addDays(ov, 1);
+
+        events.push({
+          type: "OVULATION",
+          start: ov,
+          end: addDays(ov, 1),
+        });
+        events.push({
+          type: "FERTILE",
+          start: fertileStart,
+          end: fertileEnd,
+        });
+      }
+    }
+    return events;
+  }
+
+  function eventsForMonth(monthDate) {
+    const start = startOfMonth(monthDate);
+    const end = endOfMonth(monthDate);
+    const all = buildEvents(end);
+    return all.filter(
+      (ev) => !(ev.end <= start || ev.start > end)
+    );
+  }
+
+  function renderMonthGrid(monthDate) {
+    const start = startOfMonth(monthDate);
+    const days = eachDayOfInterval({
+      start,
+      end: endOfMonth(monthDate),
+    });
+    const evs = eventsForMonth(monthDate);
+
+    return (
+      <div className="grid grid-cols-7 gap-1">
+        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
+          <div key={d} className="text-xs font-semibold text-center">
+            {d}
+          </div>
+        ))}
+        {Array(start.getDay())
+          .fill(0)
+          .map((_, i) => (
+            <div key={`pad-${i}`} />
+          ))}
+        {days.map((d) => {
+          const dayEvs = evs.filter(
+            (ev) => (d >= ev.start && d < ev.end) || isSameDay(d, ev.start)
+          );
+          let cls = "bg-white";
+          if (dayEvs.some((e) => e.type === "PERIOD")) cls = "bg-red-100";
+          else if (dayEvs.some((e) => e.type === "FERTILE")) cls = "bg-green-100";
+          else if (dayEvs.some((e) => e.type === "OVULATION"))
+            cls = "bg-yellow-100";
+
+          return (
+            <div
+              key={d.toISOString()}
+              className={`p-2 border rounded ${cls} min-h-[68px]`}
+            >
+              <div className="text-sm font-medium">{format(d, "d")}</div>
+              <div className="text-xs mt-1">
+                {dayEvs.map((e, idx) => (
+                  <div key={idx} className="truncate">
+                    {e.type}
+                    {e.type === "OVULATION" ? " ⭐" : ""}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  function buildICS(rangeStart = new Date(2025, 11, 1), rangeEnd = new Date(2026, 11, 31)) {
+    const events = buildEvents(rangeEnd);
+    const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Cycle Calendar 2025-2026//EN"];
+    const dateStamp = (d) => format(d, "yyyyMMdd");
+
+    events.forEach((ev) => {
+      if (ev.end < rangeStart || ev.start > rangeEnd) return;
+      lines.push("BEGIN:VEVENT");
+      lines.push(`SUMMARY:${ev.type}`);
+      lines.push(`CATEGORIES:${ev.type}`);
+      lines.push(`DTSTART;VALUE=DATE:${dateStamp(ev.start)}`);
+      lines.push(`DTEND;VALUE=DATE:${dateStamp(ev.end)}`);
+      lines.push("END:VEVENT");
+    });
+
+    lines.push("END:VCALENDAR");
+    return lines.join("\n");
+  }
+
+  function downloadICS() {
+    const ics = buildICS();
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "cycle_calendar_dec2025_dec2026.ics";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <div className="p-6 font-sans">
+      <h1 className="text-2xl mb-2">Cycle Calendar — Dec 2025 to Dec 2026</h1>
+      <p className="mb-4 text-sm">
+        Your historical and predicted cycles are shown with colors:
+        <br />
+        <span className="inline-block w-3 h-3 bg-red-300 mr-1 align-middle" />
+        Period &nbsp;&nbsp;
+        <span className="inline-block w-3 h-3 bg-green-300 mr-1 align-middle" />
+        Fertile &nbsp;&nbsp;
+        <span className="inline-block w-3 h-3 bg-yellow-200 mr-1 align-middle" />
+        Ovulation
+      </p>
+
+      <div className="flex gap-4 mb-4">
+        <textarea
+          value={rawDates}
+          onChange={(e) => setRawDates(e.target.value)}
+          className="w-1/2 p-2 border rounded h-64 text-xs"
+        />
+        <div className="w-1/2">
+          <button
+            onClick={parseDatesFromRaw}
+            className="px-4 py-2 bg-blue-600 text-white rounded"
+          >
+            Update from dates
+          </button>
+          <div className="mt-3 text-sm">
+            Detected {periodStarts.length} period starts. Average cycle ≈{" "}
+            <strong>{averageCycle()}</strong> days.
+          </div>
+
+          <div className="mt-3 flex items-center gap-2 text-sm">
+            <span>Period length (days)</span>
+            <input
+              type="number"
+              value={periodLength}
+              onChange={(e) => setPeriodLength(Number(e.target.value))}
+              className="w-20 p-1 border rounded"
+            />
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2 text-sm">
+            <button
+              onClick={() => setViewMonth(new Date(2025, 11, 1))}
+              className="px-3 py-1 border rounded"
+            >
+              Dec 2025
+            </button>
+            <button
+              onClick={() => setViewMonth(new Date(2026, 0, 1))}
+              className="px-3 py-1 border rounded"
+            >
+              Jan 2026
+            </button>
+            <button
+              onClick={() => setViewMonth(new Date(2026, 11, 1))}
+              className="px-3 py-1 border rounded"
+            >
+              Dec 2026
+            </button>
+            <button
+              onClick={downloadICS}
+              className="ml-auto px-4 py-2 bg-green-600 text-white rounded"
+            >
+              Download .ics (Dec25–Dec26)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <div className="mb-2 font-semibold">
+          Month view: {format(viewMonth, "MMMM yyyy")}
+        </div>
+        {renderMonthGrid(viewMonth)}
+      </div>
+
+      <div className="flex gap-2 mt-2">
+        <button
+          onClick={() => setViewMonth(addMonths(viewMonth, -1))}
+          className="px-3 py-2 border rounded"
+        >
+          Prev
+        </button>
+        <button
+          onClick={() => setViewMonth(addMonths(viewMonth, 1))}
+          className="px-3 py-2 border rounded"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
