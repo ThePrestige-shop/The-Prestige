@@ -1,322 +1,139 @@
 <!DOCTYPE html>
-<html>
-<title>Joseph K. Daniels - Ornithologist and Conservaionist</title>
-<link rel="icon" type="image/x-icon" href="bird.png">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="google-site-verification" content="8bFs7cz_R13cUm6OZxcA1pR3mQpy2P15C5tYxyIgpSU" />
-<link rel="stylesheet" href="styles.css" type="text/css">
-<script src="script.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Joseph K. Daniels - Ornithologist and Conservation Biologist specializing in vultures and avian ecology.">
+  <meta name="google-site-verification" content="8bFs7cz_R13cUm6OZxcA1pR3mQpy2P15C5tYxyIgpSU" />
+  <title>Joseph K. Daniels | Ornithologist & Conservation Biologist</title>
+  <link rel="icon" type="image/x-icon" href="bird.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
 
-body, html {
-  height: 100%;
-  width: 100%;
-  line-height: 1.8;
-}
-
-/* Full height image header */
-.bgimg-1 {
-  background-position: center;
-  background-size: cover;
-  background-image: url("Hooded Vulture.jpg");
-  min-height: 100%;
-}
-
-
-.w3-bar .w3-button {
-  padding: 16px;
-}
-</style>
 <body>
 
-<!-- Navbar (sit on top) -->
+<!-- NAVBAR -->
 <div class="w3-top">
-  <div class="w3-bar w3-white w3-card" id="myNavbar">
-    <a href="#home" class="w3-bar-item w3-button w3-wide"><img src="bird.png"/>The Prestige</a>
-    <!-- Right-sided navbar links -->
+  <div class="w3-bar w3-white w3-card">
+    <a href="#home" class="w3-bar-item w3-button w3-wide">
+      <img src="bird.png" alt="Logo" style="height:25px;"> The Prestige
+    </a>
+
     <div class="w3-right w3-hide-small">
-      <a href="Blog/blog1/index" class="w3-bar-item w3-button"><img src="blog.png"/></i>BLOG</a>
-      <a href="#work" class="w3-bar-item w3-button"><i class="fa fa-th"></i>WORKS</a>
-      <a href="#skills" class="w3-bar-item w3-button"><img src="icons.png"/></i>SKILLS</a>
-      <a href="#contact" class="w3-bar-item w3-button"><i class="fa fa-envelope"></i>CONTACT</a>
+      <a href="Blog/blog1/index" class="w3-bar-item w3-button">BLOG</a>
+      <a href="#work" class="w3-bar-item w3-button">WORKS</a>
+      <a href="#skills" class="w3-bar-item w3-button">SKILLS</a>
+      <a href="#contact" class="w3-bar-item w3-button">CONTACT</a>
     </div>
-    <!-- Hide right-floated links on small screens and replace them with a menu icon -->
 
-    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
-        <i class="fa fa-bars"></i>
-      </a>
-    </div>
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="toggleSidebar()">
+      <i class="fa fa-bars"></i>
+    </a>
   </div>
-
-  <!-- Sidebar on small screens when clicking the menu icon -->
-  <nav class="w3-sidebar w3-bar-block w3-black w3-card w3-animate-left w3-hide-medium w3-hide-large" style="display: none;" id="mySidebar">
-    <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">Close ×</a>
-    <a href="Blog/blog1/index" onclick="w3_close()" class="w3-bar-item w3-button">BLOG</a>
-    <a href="#work" onclick="w3_close()" class="w3-bar-item w3-button">WORK</a>
-    <a href="#skills" onclick="w3_close()" class="w3-bar-item w3-button">SKILLS</a>
-    <a href="#contact" onclick="w3_close()" class="w3-bar-item w3-button">CONTACT</a>
-  </nav>
-
-<<div class="w3-bar w3-border w3-white">
-  <div class="w3-bar-item" > </div>
 </div>
-<!-- Header with full-height image -->
+
+<!-- HEADER -->
 <header class="bgimg-1 w3-display-container" id="home">
   <div class="w3-display-left w3-text-white" style="padding:48px">
-    <span class="w3-jumbo w3-hide-small">Wildlife is Life</span><br>
-  <!--  <span class="w3-xxlarge ">Watching Birds is the best hobby</span><br> -->
-    <span class="w3-xxlarge">The Hooded Vulture needs your help.</span>
-    <p><a href="https://www.iucnredlist.org/species/22695185/204974761" class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity w3-hover-opacity-off">Learn more and help today</a></p>
-  </div>
-  <div class="w3-display-bottomleft w3-text-black w3-large" style="padding:24px 48px">
-  <!--  <i class="fa fa-facebook-official w3-hover-opacity"></i>-->
-    <a href="https://orcid.org/0000-0002-3181-5814" onclick="w3_close()" class="fa fa-orcid w3-hover-opacity"><img src="id.png"/></a>
-<!--    <i class="fa fa-pinterest-p w3-hover-opacity"></i>-->
-    <a href="https://twitter.com/JayK_Daniels" onclick="w3_close()" class="fa fa-twitter w3-hover"></a>
-    <a href="https://www.linkedin.com/in/joseph-d-5258aa103/" onclick="w3_close()" class="fa fa-linkedin w3-hover-opacity"></a>
-  </div>
-  <div class="w3-display-bottommiddle w3-text-black w3-large" style="padding:24px 48px">
-    <p> <b>©Alfred Prunesquallor </b> </p>
-    <!-- retrieved from https://ianbcross.wordpress.com/2014/06/05/hooded-vulture/ -->
+    <h1 class="w3-jumbo">Wildlife is Life</h1>
+    <h2 class="w3-xxlarge">The Hooded Vulture needs your help.</h2>
+    <a href="https://www.iucnredlist.org/species/22695185/204974761"
+       class="w3-button w3-black w3-padding-large w3-large w3-margin-top">
+       Learn More
+    </a>
   </div>
 </header>
 
-
-<!-- Promo Section - "We know design" -->
-<div class="w3-container w3-light-grey" style="padding:128px 16px">
+<!-- FIELD WORK -->
+<section class="w3-container w3-light-grey" style="padding:100px 16px">
   <div class="w3-row-padding">
     <div class="w3-col m6">
-      <h3>Field Work.</h3>
-      <p>Sulphur-breasted Bushshrike - Amurum</p>
-      <p>
-        <p>You may want to read my blog about my experiences</p><a href="#work" class="w3-button w3-black"><i class="fa fa-th"> </i> View My Species Gallery</a></p>
+      <h3>Field Work</h3>
+      <p>Sulphur-breasted Bushshrike – Amurum Forest</p>
+      <a href="#work" class="w3-button w3-black">
+        <i class="fa fa-th"></i> View Species Gallery
+      </a>
     </div>
     <div class="w3-col m6">
-      <img class="w3-image w3-round-large" src="Sulphur-breasted Bushshrike - Amurum.jpg" alt="Sulphur-breasted Bushshrike - Amurum" width="500" height="100">
+      <img class="w3-image w3-round-large"
+           src="Sulphur-breasted Bushshrike - Amurum.jpg"
+           alt="Sulphur-breasted Bushshrike at Amurum">
     </div>
   </div>
-</div>
+</section>
 
-
-<!-- Promo Section "Statistics" -->
-<div class="w3-container w3-row w3-center w3-padding-64"> <!-- w3-dark-grey -->
+<!-- STATS -->
+<section class="w3-container w3-center w3-padding-64">
   <div class="w3-quarter">
-    <span class="w3-xxlarge">4</span>
-    <br>Scientific Publication
-  </div>
-  <div class="w3-quarter">
-    <span class="w3-xxlarge">400+</span>
-    <br>Birds seen
+    <h2>4</h2>
+    <p>Scientific Publications</p>
   </div>
   <div class="w3-quarter">
-    <span class="w3-xxlarge">3</span>
-    <br>Scientific projects
+    <h2>400+</h2>
+    <p>Birds Observed</p>
   </div>
   <div class="w3-quarter">
-    <span class="w3-xxlarge">2</span>
-    <br>Website published
+    <h2>3</h2>
+    <p>Scientific Projects</p>
   </div>
-</div>
-
-<!-- Work Section -->
-<div class="w3-container" style="padding:128px 16px" id="work">
-  <h3 class="w3-center">Sample Birds I have seen</h3>
-  <!--p class="w3-center w3-large">What I have done </p>-->
-
-  <div class="w3-row-padding" style="margin-top:64px">
-    <div class="w3-col l3 m6">
-      <img src="African Paradise-Flycatcher - Amurum.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="African Paradise-Flycatcher - Amurum">
-    </div>
-    <div class="w3-col l3 m6">
-      <img src="Common Bulbul - Amurum.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Common Bulbul">
-    </div>
-    <div class="w3-col l3 m6">
-      <img src="Lavender Waxbill - Amurum.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Lavender Waxbill">
-    </div>
-    <div class="w3-col l3 m6">
-      <img src="Yellow White-eye - Amurum.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Yellow White-eye">
-    </div>
+  <div class="w3-quarter">
+    <h2>2</h2>
+    <p>Websites Published</p>
   </div>
+</section>
 
-  <div class="w3-row-padding w3-section">
-    <div class="w3-col l3 m6">
-      <img src="Yellow-fronted Tinkerbird - Amurum.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Yellow-fronted Tinkerbird">
-    </div>
-    <div class="w3-col l3 m6">
-      <img src="Yellow-rumped Tinkerbird - Amurum.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Yellow-rumped Tinkerbird">
-    </div>
-    <div class="w3-col l3 m6">
-      <img src="Yellow-mantled Widowbird - Amurum.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Yellow-mantled Widowbird - Amurum">
-    </div>
-    <div class="w3-col l3 m6">
-      <img src="Spotted Flycatcher - Amurum.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Spotted Flycatcher">
-    </div>
-</div>
-<div class ="redy">
-  <a href= "https://photos.app.goo.gl/QGtQzjGe68c9vWFQ8"><h2>Click here to view more birds from my Album</h2></a>
-</div>
+<!-- SKILLS -->
+<section class="w3-container w3-padding-64" id="skills">
+  <h3 class="w3-center">Skills & Expertise</h3>
 
-<!-- Modal for full size images on click-->
-<div id="modal01" class="w3-modal w3-black" onclick="this.style.display='none'">
-  <span class="w3-button w3-xxlarge w3-black w3-padding-large w3-display-topright" title="Close Modal Image">×</span>
-  <div class="w3-modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
-    <img id="img01" class="w3-image">
-    <p id="caption" class="w3-opacity w3-large"></p>
-  </div>
-</div>
-
-<!-- Skills Section -->
-<div class="w3-container  w3-padding-64" id="skills">
-  <div class="w3-row-padding">
-    <div class="w3-col m6">
-      <p><h3>MY SKILLS.</h3></p>
-      <p><h3>Field research and bird surveys.<h3></p>
-      <p><h3>Bird ringing and identification.<h3></p>
-      <p><h3>Project Design and implementation, Proposal and Scientific writing.</h3></p>
-    </div>
-    <div class="w3-col m6">
-      <p><h3>RECENT ROLES.</h3></p>
-      <p><h3>Teaching and research assistant at the Department of Conservation Biology and Entomology, University of Cape Coast, Ghana.<h3></p>
+  <div class="w3-content" style="max-width:800px">
+    <p><strong>R & Statistical Analysis, GIS Programming</strong></p>
+    <div class="w3-grey">
+      <div class="w3-container w3-dark-grey w3-center" style="width:90%">90%</div>
     </div>
 
-    <div class="w3-col m6">
-      <p class="w3-wide"><i class="fa fa-camera w3-margin-right"></i><h3>R programming and Statistical analysis, Geographic Information System (GIS) programming</h3></p>
-      <div>
-          <div class="w3-grey">
-        <div class="w3-container w3-dark-grey w3-center" style="width:90%">90%</div>
-      </div>
-      <p class="w3-wide"><i class="fa fa-desktop w3-margin-right"></i><h3>Scientific writing</h3></p>
-      <div class="w3-grey">
-        <div class="w3-container w3-dark-grey w3-center" style="width:85%">85%</div>
-      </div>
-      <p class="w3-wide"><i class="fa fa-photo w3-margin-right"></i><h3>HTML and Adobe Software (Illustrator, Photoshop)</h3></p>
-      <div class="w3-grey">
-        <div class="w3-container w3-dark-grey w3-center" style="width:75%">75%</div>
-      </div>
+    <p><strong>Scientific Writing</strong></p>
+    <div class="w3-grey">
+      <div class="w3-container w3-dark-grey w3-center" style="width:85%">85%</div>
+    </div>
+
+    <p><strong>HTML & Adobe Suite</strong></p>
+    <div class="w3-grey">
+      <div class="w3-container w3-dark-grey w3-center" style="width:75%">75%</div>
     </div>
   </div>
-</div>
-</div>
-</div>
-<!-- Pricing Section -->
-<div class="w3-container w3-center" style="padding:128px 16px" id="pricing">
-  <h3>EDUCATION</h3>
-  <p class="w3-large"><h2>Institutions that shaped me.</h2></p>
-  <div class="w3-row-padding" style="margin-top:64px">
-    <div class="w3-third w3-section">
-      <ul class="w3-ul w3-white w3-hover-shadow">
-        <li class="w3-black w3-xlarge w3-padding-32">Secondary school</li>
-        <li class="w3-padding-16"><b>Mfantsipim School</b></li>
-        <li class="w3-padding-16"><b>2011 - 2014</b></li>
-        <li class="w3-padding-16"><b>Sarbah-Picot House</b></li>
-        <li class="w3-padding-16"><b>Science 2</b></li>
-        <li class="w3-padding-16">
-          <h2 class="w3-wide">Dwen Hw3 Kan</h2>
-          <span class="w3-opacity"></span>
-        </li>
-        <li class="w3-light-grey w3-padding-24">
-          <a href="https://mfantsipim.com/"
-          <button class="w3-button w3-black w3-padding-large">
-            Link to website</button> </a>
-        </li>
-      </ul>
-    </div>
-    <div class="w3-third">
-      <ul class="w3-ul w3-white w3-hover-shadow">
-        <li class="w3-red w3-xlarge w3-padding-48">Undergraduate</li>
-        <li class="w3-padding-16"><b>University of Ghana</b></li>
-        <li class="w3-padding-16"><b>2014-2018</b></li>
-        <li class="w3-padding-16"><b>Legon Hall</b></li>
-        <li class="w3-padding-16"><b>Animal Biology and Conservation Science</b></li>
-        <li class="w3-padding-16">
-          <h2 class="w3-wide">Integri Procedamus</h2>
-          <span class="w3-opacity">Proceed with Dignity</span>
-        </li>
-        <li class="w3-light-grey w3-padding-24">
-          <a href="https://www.ug.edu.gh/"
-          <button class="w3-button w3-black w3-padding-large">Link to website</button> </a>
-        </li>
-      </ul>
-    </div>
-    <div class="w3-third w3-section">
-      <ul class="w3-ul w3-white w3-hover-shadow">
-        <li class="w3-black w3-xlarge w3-padding-32">Graduate School</li>
-        <li class="w3-padding-16"><b>MSc and MPhil at A.P.Leventis Ornithological Institute and University of Cape Coast respectively</b></li>
-        <li class="w3-padding-16"><b>2022-2024</b></li>
-        <li class="w3-padding-16"><b>APLORI and UCC</b></li>
-        <li class="w3-padding-16"><b>Conservation Biology</b></li>
-        <li class="w3-padding-16">
-          <h2 class="w3-wide">Veritas Nobis Lumen</h2>
-          <span class="w3-opacity"></span>
-        </li>
-        <li class="w3-light-grey w3-padding-24">
-          <a href="https://www.aplori.org/"
-          <button class="w3-button w3-black w3-padding-large">Link to website</button> </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
+</section>
 
-<!-- Contact Section -->
-<div class="w3-container w3-light-grey" style="padding:128px 16px" id="contact">
-  <h3 class="w3-center">CONTACT</h3>
-  <p class="w3-center w3-large">Lets get in touch. Send me a message:</p>
-  <div style="margin-top:48px">
-    <p><i class="fa fa-map-marker fa-fw w3-xxlarge w3-margin-right"></i> Accra, Ghana</p>
-    <p><i class="fa fa-phone fa-fw w3-xxlarge w3-margin-right"></i> Whatsapp only: +233-269166587</p>
-  <!--  <p><i class="fa fa-envelope fa-fw w3-xxlarge w3-margin-right"> </i> </p> -->
-    <br>
+<!-- CONTACT -->
+<section class="w3-container w3-light-grey" style="padding:100px 16px" id="contact">
+  <h3 class="w3-center">Contact</h3>
+
+  <div class="w3-content" style="max-width:600px">
+    <p><i class="fa fa-map-marker"></i> Accra, Ghana</p>
+    <p><i class="fa fa-phone"></i> WhatsApp: +233-269166587</p>
+
     <form name="contact" method="POST" data-netlify="true">
-      <p> <label>Your Name: <input type="text" name="name" class="w3-input w3-border"/></label> </p>
-      <p> <label>Your Email: <input type="email" name="email" class="w3-input w3-border" /></label> </p>
-      <p> <label>Your Subject: <input type="text" name="subject" class="w3-input w3-border" /></label> </p>
-      <p> <label>Message: <textarea name="message" class="w3-input w3-border"></textarea></label> </p>
-      <p>
-        <button class="w3-button w3-black" type="submit">
-           SEND MESSAGE
-        </button>
-      </p>
+      <input type="text" name="name" placeholder="Your Name" class="w3-input w3-border" required>
+      <input type="email" name="email" placeholder="Your Email" class="w3-input w3-border" required>
+      <textarea name="message" placeholder="Your Message" class="w3-input w3-border" required></textarea>
+      <button class="w3-button w3-black w3-margin-top" type="submit">Send Message</button>
     </form>
-    <!-- Image of location/map -->
-    <img src="aplori.jpg" class="w3-image" style="width:100%;margin-top:48px">
   </div>
-</div>
+</section>
 
-<!-- Footer -->
-<footer class="w3-center w3-black w3-padding-64">
-  <a href="#home" class="w3-button w3-light-grey"><i class="fa fa-arrow-up w3-margin-right"></i>To the top</a>
-  <div class="w3-xlarge w3-section">
-  </div>
-  <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-text-green">W3School Spaces</a></p>
+<!-- FOOTER -->
+<footer class="w3-center w3-black w3-padding-32">
+  <a href="#home" class="w3-button w3-light-grey">
+    <i class="fa fa-arrow-up"></i> Back to Top
+  </a>
+  <p>© 2026 Joseph K. Daniels</p>
 </footer>
 
 <script>
-// Modal Image Gallery
-function onClick(element) {
-  document.getElementById("img01").src = element.src;
-  document.getElementById("modal01").style.display = "block";
-  var captionText = document.getElementById("caption");
-  captionText.innerHTML = element.alt;
-}
-
-// Toggle between showing and hiding the sidebar when clicking the menu icon
-var mySidebar = document.getElementById("mySidebar");
-
-function w3_open() {
-  if (mySidebar.style.display === 'block') {
-    mySidebar.style.display = 'none';
-  } else {
-    mySidebar.style.display = 'block';
-  }
-}
-
-// Close the sidebar with the close button
-function w3_close() {
-    mySidebar.style.display = "none";
+function toggleSidebar() {
+  const sidebar = document.getElementById("mySidebar");
+  sidebar.style.display = sidebar.style.display === "block" ? "none" : "block";
 }
 </script>
 
