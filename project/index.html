@@ -46,6 +46,7 @@ body {
       <li class="nav-item"><a class="nav-link" href="#research">Research</a></li>
       <li class="nav-item"><a class="nav-link" href="#publications">Publications</a></li>
       <li class="nav-item"><a class="nav-link" href="#map-section">GIS Map</a></li>
+      <li class="nav-item"><a class="nav-link" href="#gallery">Gallery</a></li>
       <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
       <li class="nav-item">
         <span class="nav-link dark-toggle" onclick="toggleDarkMode()">🌙</span>
@@ -159,6 +160,57 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 L.marker([5.6, -0.18]).addTo(map)
   .bindPopup("Hooded Vulture Observation - Accra");
 
+
+  <!-- GOOGLE PHOTOS BIRD GALLERY -->
+  <section id="gallery" class="py-5">
+    <div class="container">
+      <h2 class="text-center mb-4">Bird Photography</h2>
+      <p class="text-center text-muted mb-5">
+        Selected field observations. Full album available on Google Photos.
+      </p>
+
+      <div class="row g-4">
+
+        <!-- Image 1 -->
+        <div class="col-6 col-md-4 col-lg-3">
+          <img src="African Paradise-Flycatcher - Amurum.jpg"
+               class="img-fluid rounded shadow-sm gallery-img"
+               alt="African Paradise-Flycatcher">
+        </div>
+
+        <!-- Image 2 -->
+        <div class="col-6 col-md-4 col-lg-3">
+          <img src="Common Bulbul - Amurum.jpg"
+               class="img-fluid rounded shadow-sm gallery-img"
+               alt="Common Bulbul">
+        </div>
+
+        <!-- Image 3 -->
+        <div class="col-6 col-md-4 col-lg-3">
+          <img src="Lavender Waxbill - Amurum.jpg"
+               class="img-fluid rounded shadow-sm gallery-img"
+               alt="Lavender Waxbill">
+        </div>
+
+        <!-- Image 4 -->
+        <div class="col-6 col-md-4 col-lg-3">
+          <img src="Yellow White-eye - Amurum.jpg"
+               class="img-fluid rounded shadow-sm gallery-img"
+               alt="Yellow White-eye">
+        </div>
+
+      </div>
+
+      <div class="text-center mt-5">
+        <a href="https://photos.app.goo.gl/QGtQzjGe68c9vWFQ8"
+           target="_blank"
+           class="btn btn-outline-dark btn-lg">
+           View Full Album on Google Photos
+        </a>
+      </div>
+
+    </div>
+  </section>
 </script>
 
 </body>
