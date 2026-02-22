@@ -6,26 +6,39 @@
 <meta name="description" content="Joseph K. Daniels - Ornithologist | Conservation Biologist | Vulture Researcher">
 <title>Joseph K. Daniels | Ornithologist</title>
 
-<!-- Bootstrap -->
+<!-- Bootstrap 5 -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <style>
-body {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
+
+body { padding-top: 70px; }
+
 .hero {
   background: url("Hooded Vulture.jpg") center/cover no-repeat;
   min-height: 100vh;
   display:flex;
   align-items:center;
   color:white;
+  text-shadow: 1px 1px 6px rgba(0,0,0,0.7);
 }
+
 #map { height: 500px; }
+
+.gallery-img {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.gallery-img:hover {
+  transform: scale(1.05);
+}
+
 .dark-toggle {
   cursor:pointer;
+  font-size: 1.2rem;
 }
 </style>
 </head>
@@ -37,7 +50,7 @@ body {
 <div class="container">
   <a class="navbar-brand fw-bold" href="#">Joseph K. Daniels</a>
 
-  <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
     <span class="navbar-toggler-icon"></span>
   </button>
 
@@ -86,24 +99,70 @@ body {
 </div>
 </section>
 
-<!-- PUBLICATIONS AUTO ORCID -->
+<!-- PUBLICATIONS -->
 <section id="publications" class="bg-light py-5">
 <div class="container">
   <h2 class="text-center mb-4">Publications</h2>
-  <div id="orcid-publications">Loading publications...</div>
+  <div id="orcid-publications" class="text-center">
+    <div class="spinner-border"></div>
+    <p>Loading publications...</p>
+  </div>
 </div>
 </section>
 
 <!-- GIS MAP -->
 <section id="map-section" class="py-5">
 <div class="container">
-  <h2 class="text-center mb-4">location Map</h2>
+  <h2 class="text-center mb-4">Vulture Research Locations</h2>
   <div id="map"></div>
 </div>
 </section>
 
+<!-- GALLERY -->
+<section id="gallery" class="py-5 bg-light">
+<div class="container">
+  <h2 class="text-center mb-4">Bird Photography</h2>
+  <div class="row g-4">
+
+    <div class="col-6 col-md-4 col-lg-3">
+      <img src="African Paradise-Flycatcher - Amurum.jpg"
+           class="img-fluid rounded shadow-sm gallery-img"
+           alt="African Paradise-Flycatcher">
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-3">
+      <img src="Common Bulbul - Amurum.jpg"
+           class="img-fluid rounded shadow-sm gallery-img"
+           alt="Common Bulbul">
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-3">
+      <img src="Lavender Waxbill - Amurum.jpg"
+           class="img-fluid rounded shadow-sm gallery-img"
+           alt="Lavender Waxbill">
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-3">
+      <img src="Yellow White-eye - Amurum.jpg"
+           class="img-fluid rounded shadow-sm gallery-img"
+           alt="Yellow White-eye">
+    </div>
+
+  </div>
+
+  <div class="text-center mt-5">
+    <a href="https://photos.app.goo.gl/QGtQzjGe68c9vWFQ8"
+       target="_blank"
+       class="btn btn-outline-dark btn-lg">
+       View Full Album on Google Photos
+    </a>
+  </div>
+
+</div>
+</section>
+
 <!-- CONTACT -->
-<section id="contact" class="bg-light py-5">
+<section id="contact" class="py-5">
 <div class="container">
   <h2 class="text-center mb-4">Contact</h2>
   <form name="contact" method="POST" data-netlify="true" class="col-md-6 mx-auto">
@@ -120,98 +179,6 @@ body {
 © 2026 Joseph K. Daniels
 </footer>
 
-<!-- JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-<script>
-// DARK MODE
-function toggleDarkMode() {
-  const html = document.documentElement;
-  const current = html.getAttribute("data-bs-theme");
-  html.setAttribute("data-bs-theme", current === "dark" ? "light" : "dark");
-  localStorage.setItem("theme", html.getAttribute("data-bs-theme"));
-}
-document.documentElement.setAttribute("data-bs-theme", localStorage.getItem("theme") || "light");
-
-// ORCID AUTO LOAD
-fetch("https://pub.orcid.org/v3.0/0000-0002-3181-5814/works", {
-  headers: { Accept: "application/json" }
-})
-.then(res => res.json())
-.then(data => {
-  let output = "<ul class='list-group'>";
-  data.group.forEach(work => {
-    let title = work["work-summary"][0].title.title.value;
-    output += `<li class="list-group-item">${title}</li>`;
-  });
-  output += "</ul>";
-  document.getElementById("orcid-publications").innerHTML = output;
-})
-.catch(() => {
-  document.getElementById("orcid-publications").innerHTML = "Unable to load publications.";
-});
-
-// LEAFLET MAP
-var map = L.map('map').setView([5.6037, -0.1870], 6); // Ghana
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-// Sample marker (replace with your GeoJSON)
-L.marker([5.6, -0.18]).addTo(map)
-  .bindPopup("Location - Accra, Ghana");
-
-
-  <!-- GOOGLE PHOTOS BIRD GALLERY -->
-  <section id="gallery" class="py-5">
-    <div class="container">
-      <h2 class="text-center mb-4">Bird Photography</h2>
-      <p class="text-center text-muted mb-5">
-        Selected field observations. Full album available on Google Photos.
-      </p>
-
-      <div class="row g-4">
-
-        <!-- Image 1 -->
-        <div class="col-6 col-md-4 col-lg-3">
-          <img src="African Paradise-Flycatcher - Amurum.jpg"
-               class="img-fluid rounded shadow-sm gallery-img"
-               alt="African Paradise-Flycatcher">
-        </div>
-
-        <!-- Image 2 -->
-        <div class="col-6 col-md-4 col-lg-3">
-          <img src="Common Bulbul - Amurum.jpg"
-               class="img-fluid rounded shadow-sm gallery-img"
-               alt="Common Bulbul">
-        </div>
-
-        <!-- Image 3 -->
-        <div class="col-6 col-md-4 col-lg-3">
-          <img src="Lavender Waxbill - Amurum.jpg"
-               class="img-fluid rounded shadow-sm gallery-img"
-               alt="Lavender Waxbill">
-        </div>
-
-        <!-- Image 4 -->
-        <div class="col-6 col-md-4 col-lg-3">
-          <img src="Yellow White-eye - Amurum.jpg"
-               class="img-fluid rounded shadow-sm gallery-img"
-               alt="Yellow White-eye">
-        </div>
-
-      </div>
-
-      <div class="text-center mt-5">
-        <a href="https://photos.app.goo.gl/QGtQzjGe68c9vWFQ8"
-           target="_blank"
-           class="btn btn-outline-dark btn-lg">
-           View Full Album on Google Photos
-        </a>
-      </div>
-
-    </div>
-  </section>
-</script>
 <!-- LIGHTBOX MODAL -->
 <div class="modal fade" id="imageModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -221,7 +188,51 @@ L.marker([5.6, -0.18]).addTo(map)
   </div>
 </div>
 
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
+// Dark mode
+function toggleDarkMode() {
+  const html = document.documentElement;
+  const current = html.getAttribute("data-bs-theme");
+  const newTheme = current === "dark" ? "light" : "dark";
+  html.setAttribute("data-bs-theme", newTheme);
+  localStorage.setItem("theme", newTheme);
+}
+document.documentElement.setAttribute("data-bs-theme", localStorage.getItem("theme") || "light");
+
+// ORCID publications
+fetch("https://pub.orcid.org/v3.0/0000-0002-3181-5814/works", {
+  headers: { Accept: "application/json" }
+})
+.then(res => res.json())
+.then(data => {
+  let output = "<ul class='list-group'>";
+  data.group.forEach(work => {
+    let summary = work["work-summary"][0];
+    if(summary.title){
+      output += `<li class="list-group-item">${summary.title.title.value}</li>`;
+    }
+  });
+  output += "</ul>";
+  document.getElementById("orcid-publications").innerHTML = output;
+})
+.catch(() => {
+  document.getElementById("orcid-publications").innerHTML = "Unable to load publications.";
+});
+
+// Leaflet map
+var map = L.map('map').setView([5.6037, -0.1870], 6);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+L.marker([5.6, -0.18]).addTo(map)
+  .bindPopup("Accra – Hooded Vulture Survey Site");
+
+// Gallery modal
 document.querySelectorAll('.gallery-img').forEach(img => {
   img.addEventListener('click', function() {
     document.getElementById('modalImage').src = this.src;
