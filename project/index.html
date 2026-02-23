@@ -205,19 +205,49 @@ function toggleDarkMode() {
 document.documentElement.setAttribute("data-bs-theme", localStorage.getItem("theme") || "light");
 
 // ORCID publications
+// ORCID publications with clickable links
 fetch("https://pub.orcid.org/v3.0/0000-0002-3181-5814/works", {
   headers: { Accept: "application/json" }
 })
 .then(res => res.json())
 .then(data => {
+
   let output = "<ul class='list-group'>";
+
   data.group.forEach(work => {
+
     let summary = work["work-summary"][0];
-    if(summary.title){
-      output += `<li class="list-group-item">${summary.title.title.value}</li>`;
+    let title = summary.title?.title?.value || "Untitled Work";
+
+    // Try to extract DOI or external URL
+    let externalUrl = summary["external-ids"]?.["external-id"]?.find(id => id["external-id-type"] === "doi");
+
+    let link = "";
+
+    if (externalUrl) {
+      link = "https://doi.org/" + externalUrl["external-id-value"];
+    } else if (summary.url?.value) {
+      link = summary.url.value;
     }
+
+    if (link) {
+      output += `
+        <li class="list-group-item">
+          <a href="${link}" target="_blank" class="text-decoration-none fw-semibold">
+            ${title}
+          </a>
+        </li>`;
+    } else {
+      output += `
+        <li class="list-group-item">
+          ${title}
+        </li>`;
+    }
+
   });
+
   output += "</ul>";
+
   document.getElementById("orcid-publications").innerHTML = output;
 })
 .catch(() => {
