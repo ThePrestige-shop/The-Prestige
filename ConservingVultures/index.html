@@ -1,145 +1,209 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/x-icon" href="vulture.png">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Conserving Vultures</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Conserving Vultures – Protecting African vultures through awareness, research, and community action.">
+<link rel="icon" type="image/png" href="vulture.png">
+
+<title>Conserving Vultures</title>
+
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+html { scroll-behavior: smooth; }
+body { padding-top: 70px; }
+
+.hero {
+  background: url("Preview2.png") center/cover no-repeat;
+  min-height: 90vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:white;
+  text-shadow: 1px 1px 8px rgba(0,0,0,0.7);
+}
+
+.hero h1 {
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.section-icon {
+  font-size: 3rem;
+}
+
+.dark-toggle {
+  cursor:pointer;
+  font-size: 1.2rem;
+}
+</style>
 </head>
+
 <body>
-    <div>
-        <!-- Navbar -->
-        <div class="w3-top w3-text-black w3-light-grey">
-            <div class="w3-bar">
-              <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><img src="bars.png"></a>
-              <a href="#home" class="w3-bar-item w3-button w3-padding-large"><img src="vulture.png"/>CONSERVING VULTURES</a>
-              <a href="IVAD2025/index" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-right">IVAD-2025</a>
-              <a href="#projects" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-right">PROJECTS</a>
-              <a href="#help" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-right">HELP</a>
-              <a href="Vultures/index" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-right">VULTURES</a>
-            </div>
-          </div>
 
-          <!-- Navbar on small screens (remove the onclick attribute if you want the navbar to always show on top of the content when clicking on the links) -->
-          <div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
-            <a href="Vultures/index" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">VULTURES</a>
-            <a href="#help" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">HELP</a>
-            <a href="#projects" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">PROJECTS</a>
-            <a href="IVAD2025/index" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">IVAD-2025</a>
-          </div>
-    </div>
-    <section id="home">
-        <div class="hero">
-         <div class="hero-text">
-          <h1>Conserving Vultures, for a healthy society
-              </h1>
-         </div>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow">
+<div class="container">
+  <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+    <img src="vulture.png" width="35" class="me-2">
+    Conserving Vultures
+  </a>
 
-        </div>
-    </section>
-    <main>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-      <div class="testimony" id="testimony" >
-        <h2 class="title"id="help"> Here's how to join the fight</h2>
-
-        <div class="testimony-main">
-                 <div class="testimony-image">
-                   <img src="Preview.png" alt="Vulture cartoon chane your perception"/>
-                 </div>
-                 <div class="testimony-text">
-                   <h3 class="w3-red"><b>Change Your Perception</h3>
-                   <p>
-                    Vultures are not evil or associated with evil spirits. Vultures play a useful role of removing carcasses and disease they contain from spreading.
-                 </b></p>
-
-                 </div>
-        </div>
-        <div class="testimony-main">
-          <div class="testimony-image">
-            <img src="Preview2.png" alt="Hooded vulture picture"/>
-          </div>
-          <div class="testimony-text">
-            <h3 class="w3-red"><b>Confront Perpetrators</h3>
-            <p style="font:bold">
-            Confront and report any perpetrator stealing vulture eggs or hunting adults. We are all stakeholders to ensure our vultures are safe. Don't stay quiet. Harassing perpetrator can achieve the goal of saving vultures.
-          </b></p>
-
-          </div>
- </div>
- <div class="testimony-main">
-  <div class="testimony-image">
-    <img src="Preview3.png" alt="Cinereous vulture image"/>
+  <div class="collapse navbar-collapse" id="navMenu">
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item"><a class="nav-link" href="#help">How to Help</a></li>
+      <li class="nav-item"><a class="nav-link" href="#projects">IVAD 2025</a></li>
+      <li class="nav-item"><a class="nav-link" href="#resources">Resources</a></li>
+      <li class="nav-item">
+        <span class="nav-link dark-toggle" onclick="toggleDarkMode()">🌙</span>
+      </li>
+    </ul>
   </div>
-  <div class="testimony-text">
-    <h3 class="w3-red"><b>Support Vulture Research</h3>
-    <p style="font:bold">
-    A great way to contribute is to support local and international bodies that work to conserve vultures. Funds you give help in ecological research and awareness to help spread positive things about vultures, changing attitudes and percetions.
-  </b></p>
+</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<div class="container">
+  <h1>Conserving Vultures for a Healthy Society</h1>
+  <p class="lead mt-3">Protecting Africa’s most misunderstood yet essential scavengers.</p>
+  <a href="#help" class="btn btn-dark btn-lg mt-4">Join the Movement</a>
+</div>
+</section>
+
+<!-- HOW TO HELP -->
+<section id="help" class="py-5">
+<div class="container">
+  <h2 class="text-center mb-5">How You Can Help</h2>
+
+  <div class="row g-4">
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <img src="Preview.png" class="card-img-top" alt="Change perception">
+        <div class="card-body text-center">
+          <h5 class="card-title text-danger">Change Perception</h5>
+          <p class="card-text">
+            Vultures are not evil. They protect public health by removing carcasses
+            and preventing disease spread. Help correct harmful myths.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <img src="Preview2.png" class="card-img-top" alt="Report persecution">
+        <div class="card-body text-center">
+          <h5 class="card-title text-danger">Confront Persecution</h5>
+          <p class="card-text">
+            Report egg theft, poisoning, or illegal hunting. Silence allows extinction.
+            Collective vigilance protects nesting populations.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <img src="Preview3.png" class="card-img-top" alt="Support research">
+        <div class="card-body text-center">
+          <h5 class="card-title text-danger">Support Research</h5>
+          <p class="card-text">
+            Support conservation organizations working on vulture ecology,
+            awareness, and policy change across Africa.
+          </p>
+        </div>
+      </div>
+    </div>
 
   </div>
 </div>
-</div>
-    </main>
-    <!-- Contact section -->
-    <div class="w3-container w3-dark-grey w3-center w3-text-light-grey w3-padding-32" id="projects">
-    <div class="w3-content w3-leftalign">
-            <div>
-                <h3>JOIN INTERNATIONAL VULTURE AWARENESS DAY (IVAD) 2025 CELEBRATION</h3>
-            <div  class="w3-content w3-justify">
-                <p><h4>Vultures have their special day, too. The International Vulture Awareness Day is celebrated every year on the
-                  first Saturday in September. For 2025, the day falls on September 6, 2025. As part of activities to celebrate the
-                  day in Ghana, the Rufford Foundation is supporting an awareness campaign for small and large scale stakeholders.
-                  Which means YOU! Come join us to celebrate and share the importance of vultures with all.<h4></p>
-                   <p> To learn more, visit the website link or WhatsApp us on how you can join and contribute.
+</section>
 
-               <p> <a href="http://wa.me/233269166587"
-               <button class="w3-button w3-black w3-padding-large">
-                 Whatsapp us on +233-269166587</button> </a></p>
-                 <br>
-                <p>
-          <a href="https://drive.google.com/drive/folders/1owFlz0a3OQ9TZvbOlBr4pNfJVpAShbbX?usp=sharing"
-          <button class="w3-button w3-black w3-padding-large">
-            Download flyers and resources for IVAD 2025</button> </a>
-        </p>
-                <hr class="w3-opacity">
-                      <h4 class="w3-center"><b><h3>Information</h3></b></h4>
-                <p>This website (conservingvultures) is dedicated to protecting vulture species, with emphasis now
-                  on West African vultures.</p>
-            </div>
-        </div>
+<!-- IVAD SECTION -->
+<section id="projects" class="bg-light py-5">
+<div class="container">
+  <h2 class="text-center mb-4">International Vulture Awareness Day 2025</h2>
+
+  <p class="lead text-center">
+    IVAD is celebrated annually on the first Saturday in September.
+    In 2025, it falls on <strong>September 6, 2025</strong>.
+  </p>
+
+  <p class="text-center">
+    Join stakeholders across Ghana and beyond in raising awareness about the
+    ecological importance of vultures. Supported by The Rufford Foundation.
+  </p>
+
+  <div class="text-center mt-4">
+    <a href="http://wa.me/233269166587" class="btn btn-success btn-lg me-3" target="_blank">
+      WhatsApp +233 269 166 587
+    </a>
+
+    <a href="https://drive.google.com/drive/folders/1owFlz0a3OQ9TZvbOlBr4pNfJVpAShbbX?usp=sharing"
+       class="btn btn-dark btn-lg"
+       target="_blank">
+       Download IVAD Resources
+    </a>
+  </div>
+</div>
+</section>
+
+<!-- RESOURCES -->
+<section id="resources" class="py-5">
+<div class="container text-center">
+  <h2 class="mb-4">Research & Publications</h2>
+
+  <div class="row justify-content-center g-4">
+
+    <div class="col-md-4">
+      <a href="https://scholar.google.com/scholar?q=%22vulture%22+AND+%22Africa%22&hl=en&as_sdt=0,5"
+         class="btn btn-outline-dark btn-lg w-100"
+         target="_blank">
+         Google Scholar – Africa Vultures
+      </a>
     </div>
 
-    <!-- Footer -->
-    <footer class="w3-container w3-center w3-padding-32 w3-light-grey">
-         <div class="w3-content" style="max-width:100%">
-            <div class="w3-one">
-                <h3>Vulture Publications - Africa</h3>
-                <ul class="w3-ul">
-                    <li class="w3-padding-16 w3-hover-black">
-                    <a href="https://scholar.google.com/scholar?q=%22vulture%22+AND+%22Africa%22&hl=en&as_sdt=0,5" class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity w3-hover-opacity-off">Google Scholar</a></p>
-                    </li>
-                    <li class="w3-padding-16 w3-hover-black">
-                        <a href="https://www.scopus.com/freelookup/form/author.uri?zone=TopNavBar&origin=NO%20ORIGIN%20DEFINED" class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity w3-hover-opacity-off">Scopus</a></p>
-                    </li>
-                </ul>
-            </div>
-            </div>
-    </footer>
-    <div class="w3-black w3-center w3-padding-24"><h6> Made with <a href="https://www.w3schools.com/spaces" title="spaces" target="_blank" class="w3-hover-opacity">W3Schools Spaces</a></h6></div>
+    <div class="col-md-4">
+      <a href="https://www.scopus.com/"
+         class="btn btn-outline-dark btn-lg w-100"
+         target="_blank">
+         Scopus Database
+      </a>
+    </div>
 
-    <script>
-      function myFunction() {
-        var x = document.getElementById("navDemo");
-        if (x.className.indexOf("w3-show") == -1) {
-          x.className += " w3-show";
-        } else {
-          x.className = x.className.replace(" w3-show", "");
-        }
-      }
+  </div>
+</div>
+</section>
 
+<!-- FOOTER -->
+<footer class="bg-dark text-light text-center py-4">
+  <p class="mb-1">© 2026 Conserving Vultures Initiative</p>
+  <small>Protecting Africa’s Scavengers Through Science & Awareness</small>
+</footer>
 
-    </script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Dark Mode Toggle
+function toggleDarkMode() {
+  const html = document.documentElement;
+  const current = html.getAttribute("data-bs-theme");
+  const newTheme = current === "dark" ? "light" : "dark";
+  html.setAttribute("data-bs-theme", newTheme);
+  localStorage.setItem("theme", newTheme);
+}
+document.documentElement.setAttribute("data-bs-theme", localStorage.getItem("theme") || "light");
+</script>
+
 </body>
 </html>
