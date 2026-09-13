@@ -36,6 +36,21 @@ body { padding-top: 70px; }
   transform: scale(1.05);
 }
 
+.video-wrapper {
+  position: relative;
+}
+.video-watermark {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  color: rgba(255,255,255,0.75);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+  pointer-events: none;
+  user-select: none;
+}
+
 .dark-toggle {
   cursor:pointer;
   font-size: 1.2rem;
@@ -310,32 +325,41 @@ Master’s research bursary supporting advanced ornithological training and fiel
   <div class="row g-4">
 
     <div class="col-md-4">
-      <video class="w-100 rounded shadow-sm" controls preload="metadata"
-             controlsList="nodownload noremoteplayback" disablePictureInPicture
-             oncontextmenu="return false;">
-        <source src="videos/mangabey1.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
+      <div class="video-wrapper">
+        <video class="w-100 rounded shadow-sm" controls preload="metadata"
+               controlsList="nodownload noremoteplayback" disablePictureInPicture
+               oncontextmenu="return false;">
+          <source src="videos/mangabey1.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <span class="video-watermark">J.K. Daniels</span>
+      </div>
       <p class="text-center mt-2 small">Mangabey troop foraging</p>
     </div>
 
     <div class="col-md-4">
-      <video class="w-100 rounded shadow-sm" controls preload="metadata"
-             controlsList="nodownload noremoteplayback" disablePictureInPicture
-             oncontextmenu="return false;">
-        <source src="videos/mangabey2.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
+      <div class="video-wrapper">
+        <video class="w-100 rounded shadow-sm" controls preload="metadata"
+               controlsList="nodownload noremoteplayback" disablePictureInPicture
+               oncontextmenu="return false;">
+          <source src="videos/mangabey2.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <span class="video-watermark">J.K. Daniels</span>
+      </div>
       <p class="text-center mt-2 small">Mangabey troop movement</p>
     </div>
 
     <div class="col-md-4">
-      <video class="w-100 rounded shadow-sm" controls preload="metadata"
-             controlsList="nodownload noremoteplayback" disablePictureInPicture
-             oncontextmenu="return false;">
-        <source src="videos/mangabey3.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
+      <div class="video-wrapper">
+        <video class="w-100 rounded shadow-sm" controls preload="metadata"
+               controlsList="nodownload noremoteplayback" disablePictureInPicture
+               oncontextmenu="return false;">
+          <source src="videos/mangabey3.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <span class="video-watermark">J.K. Daniels</span>
+      </div>
       <p class="text-center mt-2 small">Mangabey field survey</p>
     </div>
 
