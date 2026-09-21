@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Field Equipment Ledger — Joseph K. Daniels">
+<title>Field Equipment Ledger | Joseph K. Daniels</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F2EA;
+    --paper: #FFFFFF;
+    --ink: #21261F;
+    --ink-soft: #5B5F51;
+    --line: #D9D5C4;
+    --accent: #7A6A1F;
+    --good: #3C6B4A;
+    --good-soft: #DCEADF;
+    --warn: #A6503A;
+    --warn-soft: #F3DFD6;
+    --radius: 6px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1B1D18; --paper: #23261F; --ink: #ECE8D9; --ink-soft: #A6A186;
+      --line: #3A3C31; --accent: #D3B94A; --good: #7FB88C; --good-soft: #223227;
+      --warn: #D68A70; --warn-soft: #35241F;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Work Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 48px 20px 80px; }
+  a.back { font-size: 14px; color: var(--accent); text-decoration: none; }
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(28px, 5vw, 38px);
+    margin: 14px 0 6px;
+  }
+  header p { margin: 0 0 4px; color: var(--ink-soft); font-size: 15px; max-width: 52ch; line-height: 1.5; }
+  .panel { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); margin-top: 28px; }
+  ul.list { list-style: none; margin: 0; padding: 0; }
+  li.item { padding: 16px 20px; border-top: 1px solid var(--line); }
+  li.item:first-child { border-top: none; }
+  .item-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+  .item-name { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 500; }
+  .item-meta { color: var(--ink-soft); font-size: 13px; margin-top: 2px; }
+  .status { font-size: 12.5px; padding: 3px 9px; border-radius: 100px; white-space: nowrap; }
+  .status.available { background: var(--good-soft); color: var(--good); }
+  .status.partial { background: #E9E0BE; color: var(--accent); }
+  .status.out { background: var(--warn-soft); color: var(--warn); }
+  .loans { margin-top: 10px; font-size: 13.5px; }
+  .loan-row { display: flex; justify-content: space-between; padding: 5px 0; color: var(--ink-soft); border-top: 1px dashed var(--line); }
+  .loan-row:first-child { border-top: none; }
+  .personal-note { font-size: 12px; color: var(--warn); margin-top: 4px; }
+  .footnote { text-align: center; font-size: 12.5px; color: var(--ink-soft); margin-top: 20px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html#equipment">&larr; Back to site</a>
+  <header>
+    <h1>Field Equipment Ledger</h1>
+    <p>Equipment provided by grant bodies, kept on a running ledger so any of it sitting idle can go to a young scientist who needs it.</p>
+    <p>Status as of 2026-09-21.</p>
+  </header>
+
+  <div class="panel">
+    <ul class="list" id="list"></ul>
+  </div>
+
+  <p class="footnote">To borrow equipment or report a return, contact Joseph directly via the <a href="index.html#contact" style="color:var(--accent)">contact form</a>.</p>
+</div>
+
+<script id="app-state" type="application/json">{"items":[{"name":"HP Laptop","source":"IdeaWild","count":1,"personal":false,"log":[{"borrower":"Joseph Daniels Rufford Project","qty":1,"date":"2026-09-21","returned":false}]},{"name":"Nikon D5600 DSLR Camera","source":"Rufford","count":1,"personal":false,"log":[{"borrower":"Joseph Daniels Rufford Project","qty":1,"date":"2026-09-21","returned":false}]},{"name":"Flick Projector","source":"Rufford","count":1,"personal":false,"log":[{"borrower":"Joseph Daniels Rufford Project","qty":1,"date":"2026-09-21","returned":false}]},{"name":"32 GB SD Cards","source":"MBZ","count":20,"personal":false,"log":[]},{"name":"Solaris Trail Cameras","source":"MBZ","count":18,"personal":false,"log":[{"borrower":"Joseph Daniels Rufford Project and Bateleur","qty":15,"date":"2026-09-21","returned":false}]},{"name":"64 GB SD Cards","source":"MBZ","count":18,"personal":false,"log":[{"borrower":"Joseph Daniels Rufford Project and Bateleur","qty":15,"date":"2026-09-21","returned":false}],"returnedToDate":1},{"name":"Garmin eTrex 22x GPS","source":"ABC","count":2,"personal":false,"log":[{"borrower":"Joseph Daniels Bateleur Project","qty":2,"date":"2026-09-21","returned":false}],"returnedToDate":1},{"name":"Dell Precision 5570 Laptop","source":"Rufford","count":1,"personal":true,"log":[]},{"name":"DJI Mini 4k Drone","source":"IdeaWild","count":1,"personal":false,"log":[{"borrower":"Joseph Daniels Rufford Project","qty":1,"date":"2026-09-21","returned":false}]},{"name":"Garmin eTrex 20 GPS","source":"IdeaWild","count":1,"personal":false,"log":[]}]}</script>
+<script>
+const state = JSON.parse(document.getElementById('app-state').textContent);
+
+function available(item) {
+  const lent = item.log.filter(l => !l.returned).reduce((s, l) => s + l.qty, 0);
+  return item.count - lent;
+}
+function statusOf(item) {
+  const avail = available(item);
+  if (item.personal) return { cls: 'out', label: 'personal — held by owner' };
+  if (avail === item.count) return { cls: 'available', label: avail + ' of ' + item.count + ' available' };
+  if (avail === 0) return { cls: 'out', label: 'all ' + item.count + ' out on loan' };
+  return { cls: 'partial', label: avail + ' of ' + item.count + ' available' };
+}
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+function render() {
+  const list = document.getElementById('list');
+  list.innerHTML = state.items.map(item => {
+    const s = statusOf(item);
+    const openLoans = item.log.filter(l => !l.returned);
+    const returnedNote = item.returnedToDate ? ' · ' + item.returnedToDate + ' returned to date' : '';
+    return `
+      <li class="item">
+        <div class="item-top">
+          <div>
+            <div class="item-name">${escapeHtml(item.name)}</div>
+            <div class="item-meta">${escapeHtml(item.source)} · ${item.count} total${returnedNote}</div>
+            ${item.personal ? '<div class="personal-note">Marked personal — excluded from lending</div>' : ''}
+          </div>
+          <span class="status ${s.cls}">${s.label}</span>
+        </div>
+        ${openLoans.length ? `<div class="loans">${openLoans.map(l => `
+          <div class="loan-row"><span>${escapeHtml(l.borrower)} — ${l.qty} ${l.qty > 1 ? 'units' : 'unit'} since ${l.date}</span></div>
+        `).join('')}</div>` : ''}
+      </li>
+    `;
+  }).join('');
+}
+render();
+</script>
+</body>
+</html>
